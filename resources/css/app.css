@@ -1,0 +1,698 @@
+@import "fancybox.css";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --anam-navy: #151B40;
+        --anam-blue-dark: #293473;
+        --anam-blue: #2949A6;
+        --anam-blue-soft: #3854A6;
+        --anam-light: #F2F2F2;
+    }
+
+    html {
+        font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+        @apply text-slate-900 antialiased;
+        background: var(--anam-light);
+    }
+}
+
+@layer components {
+    .app-shell {
+        @apply flex h-screen;
+        background: var(--anam-light);
+        color: var(--anam-navy);
+    }
+
+    .app-main {
+        @apply flex-1 overflow-x-hidden overflow-y-auto;
+        background:
+            radial-gradient(circle at 18% 0%, rgba(41, 73, 166, 0.08), transparent 24rem),
+            radial-gradient(circle at 100% 22%, rgba(56, 84, 166, 0.06), transparent 22rem),
+            var(--anam-light);
+    }
+
+    .app-container {
+        @apply mx-auto w-full max-w-7xl px-4 py-5 pb-16 sm:px-6 lg:px-8;
+    }
+
+    .page-title {
+        @apply text-xl font-black uppercase tracking-tight sm:text-2xl;
+        color: var(--anam-navy);
+    }
+
+    .page-subtitle {
+        @apply mt-1 text-xs font-medium text-slate-500;
+    }
+
+    .panel {
+        @apply overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm;
+    }
+
+    .panel-pad {
+        @apply p-5 sm:p-6;
+    }
+
+    .stat-card {
+        @apply relative flex items-center gap-4 overflow-hidden rounded-xl border bg-white px-5 py-5 shadow-sm transition duration-200 hover:shadow-md;
+        border-color: rgba(56, 84, 166, 0.18);
+    }
+
+    .stat-icon {
+        @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm;
+    }
+
+    .modern-table-wrap {
+        @apply overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm;
+    }
+
+    .modern-table {
+        @apply min-w-full divide-y divide-slate-200;
+    }
+
+    .modern-table thead th,
+    table thead th {
+        @apply bg-slate-50 px-5 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-slate-400;
+    }
+
+    .modern-table tbody,
+    table tbody {
+        @apply divide-y divide-slate-100 bg-white;
+    }
+
+    .modern-table tbody tr,
+    table tbody tr {
+        @apply transition-colors hover:bg-indigo-50/40;
+    }
+
+    .modern-table tbody td,
+    table tbody td {
+        @apply border-slate-100;
+    }
+
+    .form-card {
+        @apply rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6;
+    }
+
+    .field-label,
+    form span.bg-gray-300,
+    form div.bg-gray-300 {
+        @apply border-0 bg-slate-100 text-sm font-medium text-slate-600;
+    }
+
+    form input[type="text"],
+    form input[type="password"],
+    form input[type="datetime-local"],
+    form input[type="file"],
+    form select,
+    form textarea {
+        @apply border-slate-200 bg-white text-slate-800 shadow-sm transition duration-150 focus:ring-2;
+        --tw-ring-color: rgba(56, 84, 166, 0.18);
+    }
+
+    form input[type="text"]:focus,
+    form input[type="password"]:focus,
+    form input[type="datetime-local"]:focus,
+    form input[type="file"]:focus,
+    form select:focus,
+    form textarea:focus {
+        border-color: var(--anam-blue);
+    }
+
+    form input[type="submit"],
+    .primary-action {
+        @apply cursor-pointer rounded-lg px-4 py-2 text-xs font-black uppercase tracking-wide text-white shadow-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-200;
+        background: var(--anam-blue);
+    }
+
+    form input[type="submit"]:hover,
+    .primary-action:hover {
+        background: var(--anam-blue-dark);
+    }
+
+    .danger-action {
+        @apply cursor-pointer rounded-lg bg-rose-600 px-4 py-2 font-semibold text-white shadow-sm shadow-rose-200 transition duration-150 hover:bg-rose-700;
+    }
+}
+
+@layer utilities {
+    .glass-header {
+        @apply border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur;
+    }
+
+    .glass-sidebar {
+        background: #ffffff;
+        box-shadow: 18px 0 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .glass-sidebar nav a {
+        @apply mx-3 rounded-lg text-slate-600 transition duration-150 hover:bg-indigo-50 hover:text-indigo-700;
+    }
+
+    .glass-sidebar nav a.bg-gray-700 {
+        @apply bg-indigo-500/15 text-white ring-1 ring-indigo-400/20;
+    }
+
+    .glass-header input[type="text"] {
+        @apply rounded-lg border-slate-200 bg-slate-50 text-slate-700 shadow-sm focus:ring-2;
+        --tw-ring-color: rgba(56, 84, 166, 0.18);
+    }
+
+    .glass-header input[type="text"]:focus {
+        border-color: var(--anam-blue);
+    }
+
+    .glass-header .bg-indigo-500 {
+        background-color: var(--anam-blue);
+        box-shadow: 0 1px 2px rgba(41, 73, 166, 0.25);
+    }
+
+    .app-main h3.text-3xl {
+        color: #0f172a;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        line-height: 2rem;
+    }
+
+    .app-main .bg-white.rounded-lg,
+    .app-main .bg-white.rounded-md,
+    .app-main .bg-white.shadow-sm {
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        background-color: rgba(255, 255, 255, 0.95);
+        --tw-shadow-color: rgba(226, 232, 240, 0.8);
+    }
+
+    .app-main .bg-white.shadow-sm.rounded-md {
+        border-radius: 0.75rem;
+        transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    .app-main .bg-white.shadow-sm.rounded-md:hover {
+        transform: translateY(-0.125rem);
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);
+    }
+
+    .app-main .rounded-full.bg-opacity-75 {
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    }
+
+    .app-main a button,
+    #elyctis-read-btn {
+        border-radius: 0.5rem;
+        background-color: var(--anam-blue);
+        color: white;
+        font-weight: 800;
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.3);
+        transition: background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .app-main a button:hover,
+    #elyctis-read-btn:hover {
+        background-color: var(--anam-blue-dark);
+    }
+
+    .nav-link {
+        @apply mx-3 rounded-lg px-4 py-3 text-slate-600 transition duration-150;
+    }
+
+    .nav-link-active {
+        @apply ring-1;
+        background: rgba(41, 73, 166, 0.10);
+        color: var(--anam-blue-dark);
+        --tw-ring-color: rgba(56, 84, 166, 0.20);
+    }
+
+    .topbar {
+        @apply flex min-h-[64px] items-center gap-4 border-b border-slate-200 bg-white/95 px-5 shadow-sm backdrop-blur-xl sm:px-7;
+    }
+
+    .topbar .text-sky-700,
+    .app-main .text-sky-700 {
+        color: var(--anam-blue);
+    }
+
+    .topbar .text-sky-600,
+    .app-main .text-sky-600 {
+        color: var(--anam-blue);
+    }
+
+    .topbar .bg-sky-50,
+    .app-main .bg-sky-50 {
+        background-color: rgba(41, 73, 166, 0.08);
+    }
+
+    .topbar-menu {
+        @apply flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm;
+    }
+
+    .app-sidebar {
+        background:
+            radial-gradient(circle at 35% 0%, rgba(41, 73, 166, 0.10), transparent 13rem),
+            linear-gradient(180deg, #ffffff 0%, var(--anam-light) 56%, rgba(56, 84, 166, 0.10) 100%);
+        border-right: 1px solid #e2e8f0;
+        box-shadow: 24px 0 60px rgba(15, 23, 42, 0.08);
+    }
+
+    .sidebar-brand {
+        @apply mx-4 mb-4 mt-4 flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm;
+    }
+
+    .app-sidebar .sidebar-brand p:first-child,
+    .app-sidebar .text-white {
+        color: var(--anam-navy) !important;
+    }
+
+    .sidebar-nav {
+        @apply flex flex-col gap-1 px-3 pb-8;
+    }
+
+    .sidebar-link {
+        @apply flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-bold text-slate-600 transition duration-150;
+    }
+
+    .sidebar-link:hover {
+        background: rgba(41, 73, 166, 0.08);
+        color: var(--anam-blue-dark);
+    }
+
+    .sidebar-link-active {
+        @apply ring-1;
+        background: rgba(41, 73, 166, 0.12);
+        color: var(--anam-blue-dark);
+        --tw-ring-color: rgba(56, 84, 166, 0.22);
+        box-shadow: none;
+    }
+
+    .console-status {
+        @apply mx-4 mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3;
+    }
+
+    .console-status-title {
+        @apply flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-700;
+    }
+
+    .console-status-title::before {
+        content: "";
+        width: 0.375rem;
+        height: 0.375rem;
+        border-radius: 9999px;
+        background: var(--anam-blue);
+        box-shadow: 0 0 0 4px rgba(41, 73, 166, 0.12);
+    }
+
+    .console-status-text {
+        @apply mt-1 text-[10px] font-medium leading-relaxed text-slate-500;
+    }
+
+    .console-footer {
+        @apply pointer-events-none absolute bottom-0 left-0 right-0 hidden h-10 items-center justify-between border-t border-slate-200 bg-white/95 px-6 text-[10px] text-slate-500 shadow-sm backdrop-blur lg:flex;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .console-footer strong {
+        @apply font-bold text-slate-700;
+    }
+
+    .visit-form-modern .form-card > div:not(:first-child),
+    .visit-form-modern #new_user > div,
+    .visit-form-modern #user_exists > div,
+    .visit-form-modern #other,
+    .visit-form-modern .form-row-modern {
+        display: grid;
+        gap: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid #f1f5f9;
+        background-color: rgba(248, 250, 252, 0.8);
+        padding: 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .visit-form-modern .form-card > div:not(:first-child),
+        .visit-form-modern #new_user > div,
+        .visit-form-modern #user_exists > div,
+        .visit-form-modern #other,
+        .visit-form-modern .form-row-modern {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .visit-form-modern .form-card > div:not(:first-child),
+        .visit-form-modern #new_user > div,
+        .visit-form-modern #user_exists > div,
+        .visit-form-modern #other,
+        .visit-form-modern .form-row-modern {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1536px) {
+        .visit-form-modern .form-card > div:not(:first-child),
+        .visit-form-modern #new_user > div,
+        .visit-form-modern #user_exists > div,
+        .visit-form-modern #other,
+        .visit-form-modern .form-row-modern {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 768px) {
+        .visit-form-modern #new_user > div:first-child {
+            grid-template-columns: 7rem minmax(0, 1fr) 7rem minmax(0, 1fr);
+        }
+
+        .visit-form-modern #new_user > div:nth-child(n+2) {
+            grid-template-columns: 11rem minmax(0, 1fr);
+        }
+
+        .visit-form-modern #new_user > div:nth-child(3) {
+            grid-template-columns: 11rem minmax(0, 1fr);
+        }
+
+        .visit-form-modern #new_user #other {
+            grid-column: 1 / -1;
+            grid-template-columns: 11rem minmax(0, 1fr);
+        }
+    }
+
+    .visit-form-modern .form-card > div:first-child {
+        @apply rounded-2xl p-5 text-slate-950;
+        border: 1px solid rgba(56, 84, 166, 0.20);
+        background: rgba(41, 73, 166, 0.08);
+    }
+
+    .visit-form-modern .page-title,
+    .visit-form-modern .page-subtitle {
+        @apply text-slate-950;
+    }
+
+    .visit-form-modern .page-subtitle {
+        @apply text-slate-500;
+    }
+
+    .visit-form-modern form span.bg-gray-300,
+    .visit-form-modern form div.bg-gray-300,
+    .visit-form-modern span.bg-gray-300,
+    .visit-form-modern div.bg-gray-300 {
+        display: flex;
+        min-height: 2.5rem;
+        align-items: center;
+        margin-left: 0;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        padding: 0.5rem 0.75rem;
+        color: #475569;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .visit-form-modern input[type="text"],
+    .visit-form-modern input[type="datetime-local"],
+    .visit-form-modern select,
+    .visit-form-modern textarea {
+        @apply min-h-10 w-full rounded-lg border-slate-200 bg-white px-3 py-2;
+    }
+
+    .visit-form-modern .w-1\/4,
+    .visit-form-modern .w-2\/4,
+    .visit-form-modern .w-fit {
+        width: 100%;
+    }
+
+    .visit-form-modern .ml-8,
+    .visit-form-modern .mr-2,
+    .visit-form-modern .mr-4,
+    .visit-form-modern .ml-2 {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .visit-form-modern #addbtn,
+    .visit-form-modern #clrbtn {
+        @apply flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100;
+    }
+
+    .visit-form-modern #addbtn svg,
+    .visit-form-modern #clrbtn svg {
+        @apply h-5 w-5 bg-transparent p-0 text-current;
+    }
+
+    .visit-form-modern {
+        @apply mx-auto w-full max-w-7xl;
+    }
+
+    .visit-form-modern .form-card {
+        @apply space-y-5;
+    }
+
+    .visit-form-modern .form-card > div:not(:first-child) {
+        align-items: end;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .visit-form-modern #new_user {
+        @apply space-y-4;
+    }
+
+    .visit-form-modern #new_user > div,
+    .visit-form-modern .form-card > div:not(:first-child) {
+        @apply mt-0;
+    }
+
+    .visit-form-modern .form-card > div:nth-last-child(2),
+    .visit-form-modern .form-card > div:nth-last-child(3) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .visit-form-modern .form-card > div:first-child + div {
+        @apply border-slate-200 bg-white;
+        grid-template-columns: repeat(2, minmax(0, 14rem));
+        justify-content: start;
+    }
+
+    .visit-form-modern .form-card > div:first-child + div span {
+        @apply flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700;
+    }
+
+    .visit-form-modern .form-card > div:first-child + div input[type="radio"] {
+        @apply h-4 w-4;
+    }
+
+    .visit-form-modern input[name="badge_n"] {
+        @apply border-amber-300 bg-amber-50 font-semibold text-slate-900;
+    }
+
+    .visit-form-modern input[name="badge_n"]:focus {
+        @apply border-amber-500 ring-2 ring-amber-200;
+    }
+
+    .visit-form-modern input[type="submit"].primary-action {
+        @apply float-none h-11 w-32 cursor-pointer;
+    }
+
+    .visit-form-modern .form-card > div:last-child {
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid #f1f5f9;
+        background: transparent;
+        padding: 1.25rem 0 0;
+        box-shadow: none;
+    }
+
+    .visit-form-modern .form-card {
+        @apply w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm;
+    }
+
+    .visit-form-modern .form-card > div:not(:first-child),
+    .visit-form-modern #new_user > div,
+    .visit-form-modern #user_exists > div,
+    .visit-form-modern #other {
+        border-color: #e2e8f0;
+        background: #f8fafc;
+        box-shadow: none;
+    }
+
+    .visit-form-modern #new_user {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .visit-form-modern #new_user > div {
+        margin-top: 0;
+    }
+
+    .visit-form-modern .form-card > div:not(:first-child) {
+        margin-top: 1rem;
+    }
+
+    .visit-form-modern .form-card > div:first-child {
+        margin-bottom: 1rem;
+    }
+
+    .visit-form-modern .form-card > div:last-child {
+        margin-top: 1.25rem;
+    }
+
+    @media (min-width: 1024px) {
+        .visit-form-modern {
+            max-width: min(100%, 72rem);
+        }
+    }
+
+    .antenne-shell .app-main {
+        background:
+            radial-gradient(circle at 12% 0%, rgba(41, 73, 166, 0.08), transparent 24rem),
+            radial-gradient(circle at 100% 20%, rgba(56, 84, 166, 0.06), transparent 22rem),
+            var(--anam-light);
+    }
+
+    .antenne-shell .app-sidebar {
+        background:
+            radial-gradient(circle at 35% 0%, rgba(41, 73, 166, 0.10), transparent 13rem),
+            linear-gradient(180deg, #ffffff 0%, var(--anam-light) 58%, rgba(56, 84, 166, 0.10) 100%);
+    }
+
+    .antenne-shell .sidebar-link-active {
+        @apply ring-1;
+        background: rgba(41, 73, 166, 0.12);
+        color: var(--anam-blue-dark);
+        --tw-ring-color: rgba(56, 84, 166, 0.22);
+        box-shadow: none;
+    }
+
+    .antenne-shell .sidebar-link:hover {
+        background: rgba(41, 73, 166, 0.08);
+        color: var(--anam-blue-dark);
+    }
+
+    .antenne-status .console-status-title::before {
+        background: var(--anam-blue);
+        box-shadow: 0 0 0 4px rgba(41, 73, 166, 0.12);
+    }
+
+    .antenne-topbar {
+        @apply border-rose-100;
+    }
+
+    .antenne-hero {
+        @apply flex flex-col gap-4 overflow-hidden rounded-xl bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between;
+        border: 1px solid rgba(56, 84, 166, 0.18);
+        background:
+            linear-gradient(135deg, rgba(41, 73, 166, 0.08), rgba(255, 255, 255, 0.98) 42%),
+            #fff;
+    }
+
+    .antenne-action {
+        @apply inline-flex w-fit items-center gap-2 rounded-lg px-4 py-2 text-xs font-black uppercase tracking-wide text-white shadow-sm transition;
+        background: var(--anam-blue);
+        box-shadow: 0 1px 2px rgba(41, 73, 166, 0.25);
+    }
+
+    .antenne-action:hover {
+        background: var(--anam-blue-dark);
+    }
+
+    .antenne-kpi {
+        @apply flex items-center gap-4 rounded-xl bg-white px-5 py-5 shadow-sm transition duration-200 hover:shadow-md;
+        border: 1px solid rgba(56, 84, 166, 0.18);
+    }
+
+    .antenne-kpi-icon {
+        @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm;
+    }
+
+    .antenne-kpi-value {
+        @apply font-mono text-2xl font-black tracking-tight text-slate-950;
+    }
+
+    .antenne-kpi-label {
+        @apply text-xs font-bold uppercase tracking-wide text-slate-500;
+    }
+
+    .antenne-panel {
+        border-color: rgba(56, 84, 166, 0.18);
+    }
+
+    .antenne-panel-head {
+        @apply flex flex-col gap-3 border-b px-5 py-4 sm:flex-row sm:items-center sm:justify-between;
+        border-color: rgba(56, 84, 166, 0.12);
+    }
+
+    .antenne-table thead th {
+        background: rgba(41, 73, 166, 0.08);
+        color: var(--anam-blue-dark);
+    }
+
+    .antenne-table tbody tr:hover {
+        background: rgba(41, 73, 166, 0.05);
+    }
+
+    .status-chip {
+        @apply inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide;
+    }
+
+    .status-waiting {
+        @apply bg-amber-100 text-amber-800;
+    }
+
+    .status-progress {
+        @apply bg-emerald-100 text-emerald-800;
+    }
+
+    .status-done {
+        @apply bg-slate-200 text-slate-700;
+    }
+
+    .status-move {
+        @apply bg-blue-100 text-blue-800;
+    }
+
+    .antenne-icon-btn {
+        @apply rounded-lg p-2 transition;
+        border: 1px solid rgba(56, 84, 166, 0.18);
+        color: var(--anam-blue);
+    }
+
+    .antenne-icon-btn:hover {
+        background: rgba(41, 73, 166, 0.08);
+        color: var(--anam-blue-dark);
+    }
+
+    .antenne-form .form-card > div:first-child {
+        @apply text-slate-950;
+        border: 1px solid rgba(56, 84, 166, 0.20);
+        background: rgba(41, 73, 166, 0.08);
+    }
+
+    .antenne-form .form-card > div:first-child .page-title {
+        @apply text-slate-950;
+    }
+
+    .antenne-form .form-card > div:first-child .page-subtitle {
+        @apply text-slate-500;
+    }
+
+    .antenne-form input[type="submit"],
+    .antenne-form .primary-action {
+        background: var(--anam-blue);
+    }
+
+    .antenne-form input[type="submit"]:hover,
+    .antenne-form .primary-action:hover {
+        background: var(--anam-blue-dark);
+    }
+}

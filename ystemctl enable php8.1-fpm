@@ -1,0 +1,23 @@
+[0;1;32m●[0m php8.1-fpm.service - The PHP 8.1 FastCGI Process Manager
+     Loaded: loaded (/lib/systemd/system/php8.1-fpm.service; enabled; vendor preset: enabled)
+     Active: [0;1;32mactive (running)[0m since Mon 2025-10-06 12:01:51 CET; 24min ago
+       Docs: man:php-fpm8.1(8)
+    Process: 580025 ExecStartPost=/usr/lib/php/php-fpm-socket-helper install /run/php/php-fpm.sock /etc/php/8.1/fpm/pool.d/www.conf 81 (code=exited, status=0/SUCCESS)
+   Main PID: 580022 (php-fpm8.1)
+     Status: "Processes active: 0, idle: 2, Requests: 0, slow: 0, Traffic: 0req/sec"
+      Tasks: 3 (limit: 11854)
+     Memory: 14.4M
+        CPU: 142ms
+     CGroup: /system.slice/php8.1-fpm.service
+             ├─580022 php-fpm: master process (/etc/php/8.1/fpm/php-fpm.conf)
+             ├─580023 php-fpm: pool www
+             └─580024 php-fpm: pool www
+
+Oct 06 12:01:51 intranet systemd[1]: Starting The PHP 8.1 FastCGI Process Manager...
+Oct 06 12:01:51 intranet php-fpm8.1[580022]: [06-Oct-2025 12:01:51] NOTICE: PHP message: PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_mysql' (tried: /usr/lib/php/20210902/pdo_mysql (/usr/lib/php/20210902/pdo_mysql: cannot open shared object file: No such file or directory), /usr/lib/php/20210902/pdo_mysql.so (/usr/lib/php/20210902/pdo_mysql.so: undefined symbol: pdo_parse_params)) in Unknown on line 0
+Oct 06 12:01:51 intranet php-fpm8.1[580022]: [06-Oct-2025 12:01:51] NOTICE: PHP message: PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_pgsql' (tried: /usr/lib/php/20210902/pdo_pgsql (/usr/lib/php/20210902/pdo_pgsql: cannot open shared object file: No such file or directory), /usr/lib/php/20210902/pdo_pgsql.so (/usr/lib/php/20210902/pdo_pgsql.so: undefined symbol: pdo_parse_params)) in Unknown on line 0
+Oct 06 12:01:51 intranet php-fpm8.1[580022]: [06-Oct-2025 12:01:51] NOTICE: PHP message: PHP Warning:  Module "gd" is already loaded in Unknown on line 0
+Oct 06 12:01:51 intranet php-fpm8.1[580022]: [06-Oct-2025 12:01:51] NOTICE: PHP message: PHP Warning:  Module "intl" is already loaded in Unknown on line 0
+Oct 06 12:01:51 intranet php-fpm8.1[580022]: [06-Oct-2025 12:01:51] NOTICE: PHP message: PHP Warning:  Module "pgsql" is already loaded in Unknown on line 0
+Oct 06 12:01:51 intranet php-fpm8.1[580022]: [06-Oct-2025 12:01:51] NOTICE: PHP message: PHP Warning:  Module "sockets" is already loaded in Unknown on line 0
+Oct 06 12:01:51 intranet systemd[1]: Started The PHP 8.1 FastCGI Process Manager.
