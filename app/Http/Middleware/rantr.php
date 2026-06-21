@@ -17,11 +17,11 @@ class rantr
      */
     public function handle(Request $request, Closure $next)
     {
-        if (in_array((int) auth::guard('web')->user()->profile, [3, 4, 5, 6, 7, 8], true))
+        if (in_array((int) auth::guard('web')->user()->profile, [3, 4, 5, 6, 7, 8, 9], true))
         {
             return $next($request);
         }else{
-            return redirect()->route('home');
+            return redirect()->route('l_index');
         }
 
     }

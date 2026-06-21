@@ -1,197 +1,190 @@
-<div>
-<div class="mt-8 bg-white p-8 rounded-lg w-fit">
-    <div class="flex">
-    <label for="ant" class="uppercase font-semibold mt-2 mr-1">Recherche par: </label>
-        <select name="search_cat" id="search_cat" wire:model="cat" wire:click="resetdata" class="bg-gray-200 p-2 rounded-lg">
-            <option value="1">Nom & Prénom</option>
-            <option value="2">Société</option>
-            <option value="4">Permis minier</option>
-            <option value="3">Date</option>
-        </select>
-    <label for="search_box" class="px-2 font-semibold mt-2">:</label>
-         <div name="search_box" id="search_box" class="@if($searchhidden) hidden @endif">
-        <input type="text" name="search" id="search" placeholder="Recherche..." wire:model="query" class="bg-gray-200 p-2 w-60 rounded-lg">
+<div class="space-y-6">
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="stat-card visitx-stat-card">
+            <div class="visitx-stat-badge">Antennes</div>
+            <div class="w-full">
+                <p class="text-sm text-slate-500">Visites totales</p>
+                <div class="mt-4 flex items-end justify-between gap-4">
+                    <p class="text-4xl font-semibold leading-none text-slate-900">{{ $totalVisits ?? 0 }}</p>
+                    <div class="flex h-14 items-end gap-1">
+                        @foreach([26, 34, 30, 42, 48] as $bar)
+                            <span class="w-2 rounded-full bg-violet-400" style="height: {{ $bar }}%"></span>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
         </div>
-        <div name="date_input" id="date_input" class="@if($datehidden) hidden @endif">
-            <input type="date" name="date" id="date" wire:model="date" class="bg-gray-200 p-2 w-60 rounded-lg">
-        </div>  
 
-    <label class="uppercase font-semibold mt-2 px-4" for="ant">dans Antenne:</label>
-         <select name="ant" id="ant" wire:model="ant_select" class="bg-gray-200 p-2 rounded-lg">
-        <option value="">Tous</option>
-@foreach ($ant as $ant_item)
-            <option value="{{$ant_item->id}}">{{$ant_item->antenne_name}}</option>
-@endforeach
-        </select>
-
-    </div>
-
-</div>
-        <div class="flex flex-col mt-6">
-            <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                            @if(!is_string($results) && !empty($query) && !$results->isEmpty())
-                <div class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
-
-                    <table class="min-w-full">
-                        <thead>
-                            <tr>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">Visiteur</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">Hôte</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">date entrée</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">Status</th>
-                                <th class="px-6 py-3 bg-gray-100 border-b border-gray-200"></th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="bg-white">
-                                        @foreach($results as $row)
-
-                                <tr class="hover:bg-gray-200">
-
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 w-10 h-10">
-<svg  class="w-10 h-10 text-indigo-600"  viewBox="0 0 256 256"><path fill="currentColor" d="M128 24a104 104 0 1 0 104 104A104.2 104.2 0 0 0 128 24Zm0 192a88 88 0 1 1 88-88a88.1 88.1 0 0 1-88 88ZM80 108a12 12 0 1 1 12 12a12 12 0 0 1-12-12Zm72 0a12 12 0 1 1 12 12a12 12 0 0 1-12-12Zm24.5 48a56 56 0 0 1-97 0a8 8 0 1 1 13.8-8a40.1 40.1 0 0 0 69.4 0a8 8 0 0 1 13.8 8Z"/></svg>
-                                        </div>
-
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900 leading-5">{{ $row->firstname }} {{ $row->lastname }}</div>
-                                            <div class="text-sm text-gray-500 leading-5">{{ $row->org_name }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    <div class="text-sm text-gray-900 leading-5">{{ $row->emp_visited }}</div>
-                                    <div class="text-sm text-gray-500 leading-5">{{ $row->ant_name }}</div>
-                                </td>
-
-
-                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-no-wrap border-b border-gray-200 leading-5">{{ to_normal_date($row->entry_date) }}</td>
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    @switch($row->status)
-                                    @case(0)
-                                    <span class="inline-flex px-2 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full leading-5 w-fit">En attente</span>
-                                    @break
-                                    @case(1)
-                                    <span class="inline-flex px-2 text-xs font-semibold text-green-800 bg-green-100 rounded-full leading-5">En cours</span>
-                                    @break
-                                    @case(2)
-                                    <span class="inline-flex px-2 text-xs font-semibold bg-gray-300 rounded-full text-black-800 leading-5">Terminée</span>
-                                    @break
-                                    @endswitch
-                                </td>
-
-                                <td class="px-6 py-4 text-sm font-medium text-right whitespace-no-wrap border-b border-gray-200 leading-5">
-                                <div class="flex">
-                            <a class="mr-2 text-indigo-600 hover:text-indigo-900" href="{{ route('i_ant_p_info',$row->id) }}">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3z"/></svg>
-                            </a>
-
-
-</div>
-                                </td>
-                            </tr>
-                            @endforeach
-                                                  </tbody>
-                    </table>
-
+        <div class="stat-card visitx-stat-card">
+            <div class="visitx-stat-badge visitx-stat-badge-green">Jour</div>
+            <div class="w-full">
+                <p class="text-sm text-slate-500">Aujourd'hui</p>
+                <div class="mt-4 flex items-end justify-between gap-4">
+                    <p class="text-4xl font-semibold leading-none text-slate-900">{{ $todayVisits ?? 0 }}</p>
+                    <div class="flex h-14 items-end gap-1">
+                        @foreach([18, 22, 28, 36, 44] as $bar)
+                            <span class="w-2 rounded-full bg-emerald-400" style="height: {{ $bar }}%"></span>
+                        @endforeach
+                    </div>
                 </div>
-                            @else
-                                <div class="flex justify-center mt-12">
-                                <div class="flex flex-wrap rounded-lg w-fit">
-                                @if ($noresults && !empty($query))
-                                    
-                                <span class="font-bold text-red-600">Aucun resultat... 😔</span>
-                                @endif
+            </div>
+        </div>
 
-                                </div>
-                                </div>
-                            @endif
-                            @if(!empty($date) && !is_string($results) && !$results->isEmpty())
-                <div class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
-
-                    <table class="min-w-full">
-                        <thead>
-                            <tr>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">Visiteur</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">Hôte</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">date entrée</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200 leading-4">Status</th>
-                                <th class="px-6 py-3 bg-gray-100 border-b border-gray-200"></th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="bg-white">
-                                        @foreach($results as $row)
-
-                                <tr class="hover:bg-gray-200">
-
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 w-10 h-10">
-<svg  class="w-10 h-10 text-indigo-600"  viewBox="0 0 256 256"><path fill="currentColor" d="M128 24a104 104 0 1 0 104 104A104.2 104.2 0 0 0 128 24Zm0 192a88 88 0 1 1 88-88a88.1 88.1 0 0 1-88 88ZM80 108a12 12 0 1 1 12 12a12 12 0 0 1-12-12Zm72 0a12 12 0 1 1 12 12a12 12 0 0 1-12-12Zm24.5 48a56 56 0 0 1-97 0a8 8 0 1 1 13.8-8a40.1 40.1 0 0 0 69.4 0a8 8 0 0 1 13.8 8Z"/></svg>
-                                        </div>
-
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900 leading-5">{{ $row->firstname }} {{ $row->lastname }}</div>
-                                            <div class="text-sm text-gray-500 leading-5">{{ $row->org_name }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    <div class="text-sm text-gray-900 leading-5">{{ $row->emp_visited }}</div>
-                                    <div class="text-sm text-gray-500 leading-5">{{ $row->ant_name }}</div>
-                                </td>
-
-
-                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-no-wrap border-b border-gray-200 leading-5">{{ to_normal_date($row->entry_date) }}</td>
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    @switch($row->status)
-                                    @case(0)
-                                    <span class="inline-flex px-2 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full leading-5 w-fit">En attente</span>
-                                    @break
-                                    @case(1)
-                                    <span class="inline-flex px-2 text-xs font-semibold text-green-800 bg-green-100 rounded-full leading-5">En cours</span>
-                                    @break
-                                    @case(2)
-                                    <span class="inline-flex px-2 text-xs font-semibold bg-gray-300 rounded-full text-black-800 leading-5">Terminée</span>
-                                    @break
-                                    @endswitch
-                                </td>
-
-                                <td class="px-6 py-4 text-sm font-medium text-right whitespace-no-wrap border-b border-gray-200 leading-5">
-                                <div class="flex">
-                            <a class="mr-2 text-indigo-600 hover:text-indigo-900" href="{{ route('i_ant_p_info',$row->id) }}">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3z"/></svg>
-                            </a>
-
-</div>
-                                </td>
-                            </tr>
-                            @endforeach
-                                                  </tbody>
-                    </table>
-
+        <div class="stat-card visitx-stat-card">
+            <div class="visitx-stat-badge visitx-stat-badge-amber">Societes</div>
+            <div class="w-full">
+                <p class="text-sm text-slate-500">Societes</p>
+                <div class="mt-4 flex items-end justify-between gap-4">
+                    <p class="text-4xl font-semibold leading-none text-slate-900">{{ $companiesCount ?? 0 }}</p>
+                    <div class="flex h-14 items-end gap-1">
+                        @foreach([20, 26, 38, 32, 40] as $bar)
+                            <span class="w-2 rounded-full bg-amber-400" style="height: {{ $bar }}%"></span>
+                        @endforeach
+                    </div>
                 </div>
-                            @else
-                                <div class="flex justify-center mt-12">
-                                <div class="flex flex-wrap rounded-lg w-fit">
-                                @if ($noresults && !empty($date))
-                                    
-                                <span class="font-bold text-red-600">Aucun resultat... 😔</span>
-                                @endif
+            </div>
+        </div>
 
-                                </div>
-                                </div>
-                            @endif
-
+        <div class="stat-card visitx-stat-card">
+            <div class="visitx-stat-badge visitx-stat-badge-slate">Presence</div>
+            <div class="w-full">
+                <p class="text-sm text-slate-500">Presents</p>
+                <div class="mt-4 flex items-end justify-between gap-4">
+                    <p class="text-4xl font-semibold leading-none text-slate-900">{{ $activeVisitors ?? 0 }}</p>
+                    <div class="flex h-14 items-end gap-1">
+                        @foreach([12, 18, 22, 26, 30] as $bar)
+                            <span class="w-2 rounded-full bg-slate-300" style="height: {{ $bar }}%"></span>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-
+    <section class="panel panel-pad">
+        <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+            <div>
+                <p class="visitx-eyebrow">Recherche historique</p>
+                <h2 class="text-xl font-semibold text-slate-900">Filtres de consultation</h2>
+                <p class="mt-1 text-sm text-slate-500">Recherchez dans les visites antennes par nom, societe, permis minier ou date.</p>
+            </div>
         </div>
-    </div>
-    </div>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-[200px_minmax(0,1fr)_200px_200px_140px]">
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Recherche par</label>
+                <select wire:model="cat" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100">
+                    <option value="1">Nom et Prenom</option>
+                    <option value="2">Societe</option>
+                    <option value="4">Permis minier</option>
+                    <option value="3">Date</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{{ $cat == '3' ? 'Date' : 'Recherche' }}</label>
+                <input type="date" wire:key="ant-history-date-filter" class="{{ $cat == '3' ? 'block' : 'hidden' }} w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100" wire:model="date" wire:change="search">
+                <input type="text" wire:key="ant-history-text-filter" placeholder="Rechercher..." class="{{ $cat == '3' ? 'hidden' : 'block' }} w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100" wire:model.debounce.500ms="query" wire:keydown.enter.prevent="search">
+            </div>
+
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Antenne</label>
+                <select wire:model="ant_select" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100">
+                    <option value="">Toutes les antennes</option>
+                    @foreach($ant as $ant_item)
+                        <option value="{{ $ant_item->id }}">{{ $ant_item->antenne_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Statut</label>
+                <select wire:model="status" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100">
+                    <option value="">Tous les statuts</option>
+                    <option value="0">En attente</option>
+                    <option value="1">En cours</option>
+                    <option value="2">Terminee</option>
+                </select>
+            </div>
+
+            <div class="flex items-end">
+                <button type="button" wire:click="search" class="w-full rounded-2xl bg-[#7F56D9] px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(127,86,217,0.22)] transition hover:bg-[#6941C6]">
+                    Rechercher
+                </button>
+            </div>
+        </div>
+    </section>
+
+    @if(!empty($results) && $results->isNotEmpty())
+        <section class="panel overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900">Resultats antennes</h2>
+                    <p class="text-sm text-slate-500">{{ $results->count() }} visite(s) trouvee(s).</p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="modern-table" aria-label="Liste des visites antennes">
+                    <thead>
+                        <tr>
+                            <th>Visiteur</th>
+                            <th>Hote</th>
+                            <th>Antenne</th>
+                            <th>Date d'entree</th>
+                            <th>Statut</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($results as $row)
+                            <tr>
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 text-sm font-bold text-violet-700">
+                                            {{ strtoupper(substr($row->firstname ?? 'V', 0, 1)) }}{{ strtoupper(substr($row->lastname ?? 'I', 0, 1)) }}
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-slate-900">{{ $row->firstname }} {{ $row->lastname }}</div>
+                                            <div class="text-sm text-slate-500">{{ $row->org_name }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-4 text-sm font-medium text-slate-900">{{ $row->emp_visited }}</td>
+                                <td class="px-5 py-4 text-sm text-slate-500">{{ $row->ant_name }}</td>
+                                <td class="px-5 py-4 text-sm text-slate-500">{{ to_normal_date($row->entry_date) }}</td>
+                                <td class="px-5 py-4">
+                                    @switch($row->status)
+                                        @case(0)
+                                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">En attente</span>
+                                            @break
+                                        @case(1)
+                                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">En cours</span>
+                                            @break
+                                        @case(2)
+                                            <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">Terminee</span>
+                                            @break
+                                    @endswitch
+                                </td>
+                                <td class="px-5 py-4">
+                                    <div class="flex justify-end">
+                                        <a href="{{ route('i_ant_p_info', $row->id) }}" class="rounded-xl border border-slate-200 p-2 text-slate-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700" title="Voir">
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5m0 12.5a5 5 0 1 1 0-10a5 5 0 0 1 0 10m0-8a3 3 0 1 0 0 6a3 3 0 0 0 0-6"/></svg>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    @elseif($noresults)
+        <section class="panel">
+            <div class="px-6 py-14 text-center">
+                <p class="font-semibold text-slate-700">Aucun resultat</p>
+                <p class="mt-1 text-sm text-slate-500">Aucune visite antenne ne correspond aux filtres saisis.</p>
+            </div>
+        </section>
+    @endif
+</div>

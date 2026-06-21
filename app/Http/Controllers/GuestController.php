@@ -54,6 +54,10 @@ class GuestController extends Controller
             case 2:
                 return $this->index_2();
                 break;
+                
+            case 9:
+                return $this->index_4();
+                break;
         }
     }
     public function index_6()
@@ -162,7 +166,7 @@ class GuestController extends Controller
 
 
 
-        return view('Reception.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
+        return view('Service.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
     }
 
     public function index_8()
@@ -186,7 +190,7 @@ class GuestController extends Controller
             ->where('visits.is_deleted', '=', 0)
             ->orderByDesc('entry_date')->get();
 
-        return view('Reception.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
+        return view('Service.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
     }
 
     public function index_4()
@@ -235,7 +239,7 @@ class GuestController extends Controller
             ->where($visibleScope)
             ->orderByDesc('entry_date')->get();
 
-        return view('Reception.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
+        return view('Service.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
     }
 
     public function index_2()
@@ -249,6 +253,43 @@ class GuestController extends Controller
             ->where('visits.is_deleted', '=', 0)
             ->orderByDesc('entry_date')->get();
         return view('President.visitors', ['url' => 'guest'], ['data' => $visits]);
+    }
+
+    public function index_9()
+    {
+        $ddmServiceId = 19;
+        $serviceIds = ug::where('a_user', '=', Auth::guard('web')->user()->id)->pluck('a_group');
+
+        $visits = db::table('visits')->selectRaw('visits.id,badge_n,visits.is_deleted,organisations.name as org_name,visitors.firstname,status,visitors.lastname,entry_date,users.name as emp_visited,groups.group_name as service_name')
+            ->leftjoin('visitors', 'visitors.id', '=', 'visits.visitor')
+            ->leftjoin('organisations', 'organisations.id', '=', 'visits.organization')
+            ->leftjoin('groups', 'groups.id', '=', 'visits.service_emp_visited')
+            ->leftjoin('users', 'users.id', '=', 'visits.emp_visited')
+            ->whereDate('entry_date', db::raw('CURDATE()'))
+            ->where('visits.is_deleted', '=', 0)
+            ->where('visits.service_emp_visited', '=', $ddmServiceId)
+            ->where(function ($query) use ($serviceIds, $ddmServiceId) {
+                $query->whereNull('visits.emp_visited')
+                    ->orWhere('visits.emp_visited', '=', Auth::guard('web')->user()->id)
+                    ->orWhere(function ($query) use ($ddmServiceId) {
+                        $query->where('visits.service_emp_visited', '=', $ddmServiceId);
+                    });
+            })
+            ->orderByDesc('entry_date')
+            ->get();
+
+        $visits_old = db::table('visits')->selectRaw('visits.id,badge_n,visits.is_deleted,organisations.name as org_name,visitors.firstname,status,visitors.lastname,entry_date,users.name as emp_visited,groups.group_name as service_name')
+            ->leftjoin('visitors', 'visitors.id', '=', 'visits.visitor')
+            ->leftjoin('organisations', 'organisations.id', '=', 'visits.organization')
+            ->leftjoin('groups', 'groups.id', '=', 'visits.service_emp_visited')
+            ->leftjoin('users', 'users.id', '=', 'visits.emp_visited')
+            ->whereRaw('entry_date < CURDATE()')
+            ->where('visits.is_deleted', '=', 0)
+            ->where('visits.service_emp_visited', '=', $ddmServiceId)
+            ->orderByDesc('entry_date')
+            ->get();
+
+        return view('Service.visitors', ['url' => 'guest'], ['data' => $visits, 'old' => $visits_old]);
     }
     public function index_2_ant()
     {
@@ -383,6 +424,11 @@ class GuestController extends Controller
             $serviceUsers = ug::select('users.id', 'users.name')
                 ->leftjoin('users', 'users.id', '=', 'user_groups.a_user')
                 ->where('user_groups.a_group', '=', $visits[0]->service_id)
+                ->get();
+        } elseif ($profile === 9) {
+            $serviceUsers = ug::select('users.id', 'users.name')
+                ->leftjoin('users', 'users.id', '=', 'user_groups.a_user')
+                ->where('user_groups.a_group', '=', $this->serviceAssignmentGroupId())
                 ->get();
         }
         return view('Reception.edit_index')
@@ -531,6 +577,57 @@ class GuestController extends Controller
                 'emp_visited' => $valid['hostname'],
             ]);
 
+            return redirect()->route('l_index');
+        }
+
+        if ($profile === 9) {
+            $valid = $request->validate([
+                'hostname' => ['required'],
+                'status' => ['required', 'integer', 'in:1,2,3'],
+            ]);
+
+            $visit = DB::table('visits')->where('id', '=', $id)->where('is_deleted', '=', 0)->first();
+            if (!$visit || !is_null($visit->emp_visited)) {
+                abort(403);
+            }
+
+            if ((int) $visit->service_emp_visited !== $this->serviceAssignmentGroupId()) {
+                abort(403);
+            }
+
+            $hostInService = ug::where('a_group', '=', $this->serviceAssignmentGroupId())
+                ->where('a_user', '=', $valid['hostname'])
+                ->exists();
+            if (!$hostInService) {
+                abort(403);
+            }
+
+            $updates = [
+                'emp_visited' => $valid['hostname'],
+                'status' => (int) $valid['status'],
+            ];
+
+            if ((int) $valid['status'] === 1 && empty($visit->accept_time)) {
+                $updates['accept_time'] = Carbon::now();
+            }
+
+            if ((int) $valid['status'] === 3 && empty($visit->sendup_time)) {
+                $updates['sendup_time'] = Carbon::now();
+            }
+
+            if ((int) $valid['status'] === 2) {
+                $updates['exit_date'] = Carbon::now();
+                $updates['validation_time'] = Carbon::now();
+                $updates['validation_by'] = $userId;
+            }
+
+            DB::table('visits')->where('id', '=', $id)->update($updates);
+
+            $this->auditVisit($id, 'ddm_visit_assigned', [
+                'emp_visited' => $visit->emp_visited,
+                'status' => $visit->status,
+            ], $updates);
+
             return redirect()->route('home');
         }
 
@@ -648,6 +745,29 @@ class GuestController extends Controller
 
         if ($profile == 4 && ((int) $visit->emp_visited !== (int) $userId || !in_array($nextStatus, [1, 3], true))) {
             abort(403);
+        }
+
+        if ($profile === 9) {
+            if ((int) $visit->emp_visited !== (int) $userId || !in_array($nextStatus, [1, 2, 3], true)) {
+                abort(403);
+            }
+
+            $updates = ['status' => $nextStatus];
+            if ($nextStatus === 1 && empty($visit->accept_time)) {
+                $updates['accept_time'] = Carbon::now();
+            }
+            if ($nextStatus === 3 && empty($visit->sendup_time)) {
+                $updates['sendup_time'] = Carbon::now();
+            }
+            if ($nextStatus === 2) {
+                $updates['exit_date'] = Carbon::now();
+                $updates['validation_time'] = Carbon::now();
+                $updates['validation_by'] = $userId;
+            }
+
+            DB::table('visits')->where('id', '=', $id)->update($updates);
+
+            return redirect()->back();
         }
 
         if ($profile == 5 && $nextStatus !== 2) {
@@ -1290,7 +1410,7 @@ class GuestController extends Controller
             'emp_visited' => $valid['hostname'],
         ]);
 
-        return redirect()->route('home');
+        return redirect()->route('l_index');
     }
 
     private function isAntenneHead($userId, $antenneId): bool

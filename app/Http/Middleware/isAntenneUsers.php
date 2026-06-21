@@ -13,6 +13,6 @@ class isAntenneUsers
             return $next($request);
         }
 
-        return redirect()->route('home');
+        return redirect()->route('l_index');
     }
 }

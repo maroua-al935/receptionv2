@@ -1,4 +1,4 @@
-@extends('Reception.layouts.master')
+@extends((int) Auth::guard('web')->user()->profile === 4 ? 'Service.layouts.master' : 'Reception.layouts.master')
 
 @section('body')
 @php $profile = (int) Auth::guard('web')->user()->profile; @endphp
@@ -47,7 +47,7 @@
                             @endforeach
                         </select>
                     </label>
-                @elseif(in_array($profile, [3, 4], true))
+                @elseif(in_array($profile, [3, 4, 9], true))
                     <div class="rounded-xl bg-slate-50/70 p-4">
                         <div class="mb-4">
                             <span class="mb-1 block text-sm font-semibold text-slate-700">Service</span>
@@ -57,7 +57,7 @@
                             <span class="mb-1 block text-sm font-semibold text-slate-700">Personne visitee</span>
                             <select name="hostname" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2">
                                 <option value="">Choisir un employe</option>
-                                @foreach($serviceUsers as $user)
+                                @foreach(($serviceUsers ?? collect()) as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
@@ -116,7 +116,7 @@
             @endif
 
             <div class="mt-6 flex justify-end">
-                <input type="submit" class="primary-action w-28 button" value="{{ $profile === 8 ? 'Orienter' : (in_array($profile, [3, 4], true) ? 'Affecter' : 'Modifier') }}">
+                <input type="submit" class="primary-action w-28 button" value="{{ $profile === 8 ? 'Orienter' : (in_array($profile, [3, 4, 9], true) ? 'Affecter' : 'Modifier') }}">
             </div>
         </div>
     </div>

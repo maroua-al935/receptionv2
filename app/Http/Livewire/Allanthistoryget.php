@@ -2,208 +2,119 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\ant_user;
-use App\Models\ant_visitors;
 use App\Models\ant_visits;
-use App\Models\visits_permets_antennes;
 use App\Models\antennes;
-use Illuminate\Support\Facades\Auth;
-
-
 use Livewire\Component;
 
 class Allanthistoryget extends Component
 {
-    public $query;
+    public $query = '';
     public $results;
-    public $cat;
+    public $cat = '1';
     public $ant;
-    public $ant_select;
-    public $date;
-    public $noresults;
-    public $searchhidden;
-    public $datehidden;
+    public $ant_select = '';
+    public $status = '';
+    public $date = '';
+    public $noresults = 0;
+    public $totalVisits = 0;
+    public $todayVisits = 0;
+    public $companiesCount = 0;
+    public $activeVisitors = 0;
+
     public function mount()
     {
-        $this->query="";
-        $this->results="";
-        $this->cat="1";
-        $this->date="";
-        $this->ant=antennes::select('id', 'antenne_name')->get();
-        $this->noresults=0;
-        $this->datehidden=1;
-        $this->searchhidden=0;
+        $this->results = collect();
+        $this->ant = antennes::select('id', 'antenne_name')->orderBy('antenne_name')->get();
+
+        $this->loadStats();
     }
+
     public function resetdata()
     {
-        $this->query="";
-        $this->date="";
-        $this->results="";
-        $this->noresults=0;
-        $this->datehidden=1;
-        $this->searchhidden=0;
-
-    }
-    public function searchbyname($query)
-    {
-        if (!empty($this->query) && strlen($this->query) >2) {
-            $ant_id=ant_user::where('ant_user', '=', Auth::guard('web')->user()->id)->get();
-            if ($this->ant_select == "") {
-                $this->results=ant_visits::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                  ->leftjoin('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-                  ->leftjoin('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                  ->leftjoin('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
-                  ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                  ->leftjoin('antenne_users', 'antenne_users.ant_user', '=', 'users.id')
-                  ->whereraw(" concat(antenne_visitors.firstname,' ',antenne_visitors.lastname) like '%".e($query)."%'")
-                  ->get();
-
-            } else {
-                $this->results=ant_visits::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                ->leftjoin('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-                ->leftjoin('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                ->leftjoin('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
-                ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                ->leftjoin('antenne_users', 'antenne_users.ant_user', '=', 'users.id')
-                ->whereraw(" concat(antenne_visitors.firstname,' ',antenne_visitors.lastname) like '%".e($query)."%'")
-                ->where('ant_location', '=', $this->ant_select)
-                ->get();
-            }
-            if ($this->results->count() >0) {
-                return $this->results;
-            } else {
-                return $this->noresults=1;
-            }
-        }
-        return $this->results="";
-
-    }
-    public function searchbycompany($query)
-    {
-        if (!empty($this->query) && strlen($this->query) >2) {
-            $ant_id=ant_user::where('ant_user', '=', Auth::guard('web')->user()->id)->get();
-            if ($this->ant_select == "") {
-                $this->results=ant_visits::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                   ->join('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-                   ->join('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                   ->join('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
-                   ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                   ->leftjoin('antenne_users', 'antenne_users.ant_user', '=', 'users.id')
-                   ->whereraw("organisations.name like '%".e($query)."%'")
-                   ->get();
-
-            } else {
-                $this->results=ant_visits::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                  ->join('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-                  ->join('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                  ->join('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
-                  ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                  ->leftjoin('antenne_users', 'antenne_users.ant_user', '=', 'users.id')
-                  ->whereraw("organisations.name like '%".e($query)."%'")
-                  ->where('ant_location', '=', $this->ant_select)
-                  ->get();
-
-            }
-            if ($this->results->count() >0) {
-                return $this->results;
-            } else {
-                return $this->noresults=1;
-            }
-        }
-        return $this->results="";
+        $this->query = '';
+        $this->date = '';
+        $this->status = '';
+        $this->ant_select = '';
+        $this->results = collect();
+        $this->noresults = 0;
     }
 
-
-    public function searchbypermet($query)
+    public function updatedCat()
     {
-        if (!empty($this->query) && strlen($this->query) >2) {
-            if ($this->ant_select == "") {
-                $this->results=visits_permets_antennes::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                  ->join('antenne_visits', 'antenne_visits_permet.visit', '=', 'antenne_visits.id')
-                   ->join('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-               ->join('permet_minier', 'permet_minier.id', '=', 'antenne_visits_permet.permet')
-                   ->join('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                   ->join('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
-                   ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                   ->leftjoin('antenne_users', 'antenne_users.ant_user', '=', 'users.id')
-                   ->whereraw("permet_minier.designation like '%".e($query)."%'")
-                   ->get();
-
-            } else {
-                $this->results=visits_permets_antennes::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                  ->join('antenne_visits', 'antenne_visits_permet.visit', '=', 'antenne_visits.id')
-                  ->join('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-               ->join('permet_minier', 'permet_minier.id', '=', 'antenne_visits_permet.permet')
-                  ->join('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                  ->join('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
-                  ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                  ->leftjoin('antenne_users', 'antenne_users.ant_user', '=', 'users.id')
-                  ->whereraw("permet_minier.designation like %".e($query)."%'")
-                  ->where('ant_location', '=', $this->ant_select)
-                  ->get();
-
-            }
-            if ($this->results->count() >0) {
-                return $this->results;
-            } else {
-                return $this->noresults=1;
-            }
-        }
-        return $this->results="";
+        $this->query = '';
+        $this->date = '';
+        $this->results = collect();
+        $this->noresults = 0;
     }
 
-
-    public function searchbydate($query)
+    public function search()
     {
-        if(!empty($query)) {
+        $this->noresults = 0;
 
-            $ant_id=ant_user::where('ant_user', '=', Auth::guard('web')->user()->id)->get();
+        $query = $this->baseQuery();
+        $query = $this->applyFilters($query);
 
-            if ($this->ant_select == "") {
-                $this->results=ant_visits::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                ->join('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-                ->join('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                ->join('antennes', 'antennes.id', 'antenne_visits.ant_location')
-                ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                ->leftjoin('antenne_users', 'antenne_visits.ant_location', 'antenne_users.ant_group')
-                        ->wheredate('entry_date', $query)
-                        ->groupByRaw('id')
-                ->orderByDesc('entry_date')->get();
-            } else {
-                $this->results=ant_visits::selectraw("antenne_visits.id,antenne_visits.is_deleted,organisations.name as org_name,antenne_visitors.firstname,status,antenne_visitors.lastname,entry_date,users.name as emp_visited,antennes.antenne_name as ant_name,antenne_visits.subject as subject")
-                ->join('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
-                ->join('organisations', 'organisations.id', '=', 'antenne_visits.organization')
-                ->join('antennes', 'antennes.id', 'antenne_visits.ant_location')
-                ->leftjoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
-                ->leftjoin('antenne_users', 'antenne_visits.ant_location', 'antenne_users.ant_group')
-                        ->where('ant_location', '=', $this->ant_select)
-                        ->wheredate('entry_date', $query)
-                        ->groupByRaw('id')
-                ->orderByDesc('entry_date')->get();
-            }
-            if ($this->results->count() >0) {
-                return $this->results;
-            } else {
-                return $this->noresults=1;
-            }
-        }
-        return $this->results="";
+        $this->results = $query->orderByDesc('antenne_visits.entry_date')->get();
+        $this->noresults = $this->results->isEmpty() ? 1 : 0;
     }
 
     public function render()
     {
-        if ($this->cat == "1") {
-            $this->searchbyname($this->query);
-        } elseif($this->cat == "2") {
-            $this->searchbycompany($this->query);
-        } elseif($this->cat == "3") {
-            $this->searchhidden=1;
-            $this->datehidden=0;
-            $this->searchbydate($this->date);
-        } elseif($this->cat == "4") {
-            $this->searchbypermet($this->query);
-
-        }
         return view('livewire.allanthistoryget');
+    }
+
+    private function loadStats()
+    {
+        $baseQuery = ant_visits::where('is_deleted', '=', 0);
+
+        $this->totalVisits = (clone $baseQuery)->count();
+        $this->todayVisits = (clone $baseQuery)->whereDate('entry_date', now())->count();
+        $this->companiesCount = (clone $baseQuery)->distinct('organization')->count('organization');
+        $this->activeVisitors = (clone $baseQuery)->whereIn('status', [0, 1])->count();
+    }
+
+    private function baseQuery()
+    {
+        return ant_visits::selectRaw('antenne_visits.id, antenne_visits.is_deleted, organisations.name as org_name, antenne_visitors.firstname, antenne_visits.status as status, antenne_visitors.lastname, antenne_visits.entry_date, users.name as emp_visited, antennes.antenne_name as ant_name, antenne_visits.subject as subject')
+            ->leftJoin('antenne_visitors', 'antenne_visitors.id', '=', 'antenne_visits.visitor')
+            ->leftJoin('organisations', 'organisations.id', '=', 'antenne_visits.organization')
+            ->leftJoin('antennes', 'antennes.id', '=', 'antenne_visits.ant_location')
+            ->leftJoin('users', 'users.id', '=', 'antenne_visits.emp_visited')
+            ->where('antenne_visits.is_deleted', '=', 0);
+    }
+
+    private function applyFilters($query)
+    {
+        if ($this->ant_select !== '') {
+            $query->where('antenne_visits.ant_location', '=', $this->ant_select);
+        }
+
+        if ($this->status !== '') {
+            $query->where('antenne_visits.status', '=', $this->status);
+        }
+
+        if ($this->cat === '3') {
+            if (!empty($this->date)) {
+                $query->whereDate('antenne_visits.entry_date', $this->date);
+            }
+
+            return $query;
+        }
+
+        if (empty($this->query) || strlen($this->query) <= 2) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($this->cat === '2') {
+            return $query->whereRaw("organisations.name like '%" . e($this->query) . "%'");
+        }
+
+        if ($this->cat === '4') {
+            return $query->leftJoin('antenne_visits_permet', 'antenne_visits_permet.visit', '=', 'antenne_visits.id')
+                ->leftJoin('permet_minier', 'permet_minier.id', '=', 'antenne_visits_permet.permet')
+                ->whereRaw("permet_minier.designation like '%" . e($this->query) . "%'");
+        }
+
+        return $query->whereRaw("concat(antenne_visitors.firstname,' ',antenne_visitors.lastname) like '%" . e($this->query) . "%'");
     }
 }

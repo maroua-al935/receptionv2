@@ -27,8 +27,16 @@ class LoginController extends Controller
         if (Auth::attempt($creds) || $this->attemptLocalLogin($valid['name'], $valid['password'], $request->boolean('remember'))) {
             $user = Auth::user();
             $hasservice=ug::where('a_user', '=', Auth::guard('web')->user()->id)->count();
-            if (in_array((int) Auth::guard('web')->user()->profile, [2, 3, 4, 5, 6, 8, 9], true)) {
-                return redirect()->route('home');
+            $profile = (int) Auth::guard('web')->user()->profile;
+            if (in_array($profile, [1, 2, 3, 4, 5, 6, 7, 8, 9], true)) {
+                return match ($profile) {
+                    2 => redirect()->route('home'),
+                    3, 4, 8 => redirect()->route('i_visitors'),
+                    5 => redirect()->route('home'),
+                    6, 7 => redirect()->route('i_visitors_ant'),
+                    9 => redirect()->route('home'),
+                    default => redirect()->route('home'),
+                };
             } else {
                 $msg="Vous n'êtes pas autorisé à utiliser cette application, veuillez ouvrir un ticket de support ou contacter le service informatique.";
                 return $this->logout($request)->withErrors(['failed'=>$msg]);
@@ -42,6 +50,7 @@ class LoginController extends Controller
     private function attemptLocalLogin(string $name, string $password, bool $remember = false): bool
     {
         $user = User::where('name', $name)
+            ->orWhere('username', $name)
             ->orWhere('user_dn', $name)
             ->orWhere('email', $name)
             ->first();

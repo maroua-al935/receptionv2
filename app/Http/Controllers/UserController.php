@@ -80,6 +80,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $data = $request->validated();
+        $data['name'] = $data['username'];
         $services = collect($data['services'] ?? [])->map(fn ($id) => (int) $id)->unique();
         $headServices = collect($data['head_services'] ?? [])->map(fn ($id) => (int) $id)->intersect($services)->unique();
         $antennes = collect($data['antennes'] ?? [])->map(fn ($id) => (int) $id)->unique();
@@ -128,6 +129,7 @@ class UserController extends Controller
     public function update(UserRequest $request, User $user)
     {
         $data = $request->validated();
+        $data['name'] = $data['username'];
         $services = collect($data['services'] ?? [])->map(fn ($id) => (int) $id)->unique();
         $headServices = collect($data['head_services'] ?? [])->map(fn ($id) => (int) $id)->intersect($services)->unique();
         $antennes = collect($data['antennes'] ?? [])->map(fn ($id) => (int) $id)->unique();

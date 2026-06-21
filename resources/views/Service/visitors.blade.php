@@ -1,24 +1,18 @@
-@extends('Reception.layouts.master')
+@extends('Service.layouts.master')
 
 @section('body')
     <div class="space-y-6">
         <div class="visitx-hero">
             <div>
-                <p class="visitx-eyebrow">Reception</p>
+                <p class="visitx-eyebrow">Service</p>
                 <h1 class="page-title">Visiteurs</h1>
-                <p class="page-subtitle">Suivi des passages du jour et des anciennes visites non cloturees.</p>
+                <p class="page-subtitle">Suivi des passages du jour et des visites precedentes du service.</p>
             </div>
             <div class="visitx-hero-side">
                 <div class="visitx-hero-chip">
                     <span class="visitx-hero-dot"></span>
-                    File du jour
+                    File du service
                 </div>
-                @if((int) Auth::guard('web')->user()->profile === 5)
-                    <a href="{{ route('i_add_visitors') }}" class="primary-action inline-flex w-fit items-center gap-2">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24"><path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
-                        Ajouter un visiteur
-                    </a>
-                @endif
             </div>
         </div>
 

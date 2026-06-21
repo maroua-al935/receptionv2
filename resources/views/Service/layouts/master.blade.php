@@ -6,17 +6,17 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="referrer" content="always">
 
-        <title>Reception</title>
+        <title>VisiLog Service</title>
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-          <style>
+        <style>
             [x-cloak] { display: none !important; }
-          </style>
+        </style>
 
     @livewireStyles
     </head>
-    <body>
-        <div x-data="{ sidebarOpen: false }" class="app-shell">
+    <body class="visitx-theme">
+        <div x-data="{ sidebarOpen: false }" class="app-shell visitx-shell flex flex-row items-stretch">
             @include('Service.layouts.sidebar')
 
             <div class="relative flex flex-1 flex-col overflow-hidden">
@@ -27,11 +27,7 @@
                         @yield('body')
                     </div>
                 </main>
-                <footer class="console-footer">
-                    <span><span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Gateway Ping : <strong>12ms</strong></span>
-                    <span>Console : <strong>Service</strong></span>
-                    <span>VGP alert : <strong>Attentat</strong></span>
-                </footer>
+            
             </div>
         </div>
         @livewireScripts

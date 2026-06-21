@@ -21,6 +21,7 @@ class User extends Authenticatable implements LdapAuthenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'phone',
         'firstname',
@@ -61,6 +62,7 @@ class User extends Authenticatable implements LdapAuthenticatable
     {
         return $query->when($search, function ($query, $search) {
             $query->where('name', 'like', "%{$search}%")
+                ->orWhere('username', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%");
         });
     }

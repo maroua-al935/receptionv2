@@ -27,11 +27,7 @@
                         @yield('body')
                     </div>
                 </main>
-                <footer class="console-footer">
-                    <span><span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Gateway Ping : <strong>12ms</strong></span>
-                    <span>Console : <strong>{{ $loc ?? 'Reception Antennes' }}</strong></span>
-                    <span>VGP alert : <strong>Attentat</strong></span>
-                </footer>
+                
             </div>
         </div>
         @livewireScripts

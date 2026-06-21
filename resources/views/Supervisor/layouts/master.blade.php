@@ -8,16 +8,15 @@
 
         <title>Reception</title>
         
-          <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-          <style>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <style>
             [x-cloak] { display: none !important; }
-          </style>
+        </style>
 
-    <script src="{{ mix('js/app.js') }}" defer></script>
-    @livewireStyles
+        @livewireStyles
     </head>
     <body>
-        <div x-data="{ sidebarOpen: false }" class="app-shell">
+        <div x-data="{ sidebarOpen: false }" class="app-shell visitx-shell flex flex-row items-stretch">
             @include('Supervisor.layouts.sidebar')
 
             <div class="relative flex flex-1 flex-col overflow-hidden">
@@ -28,11 +27,7 @@
                         @yield('body')
                     </div>
                 </main>
-                <footer class="console-footer">
-                    <span><span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Gateway Ping : <strong>12ms</strong></span>
-                    <span>Console : <strong>Supervision</strong></span>
-                    <span>VGP alert : <strong>Attentat</strong></span>
-                </footer>
+               
             </div>
         </div>
         @livewireScripts

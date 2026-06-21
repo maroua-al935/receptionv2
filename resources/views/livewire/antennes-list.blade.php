@@ -14,99 +14,36 @@
             }
         }
     @endphp
-
-    <div class="grid gap-4 lg:grid-cols-12">
-        <aside class="lg:col-span-3">
-            <div class="h-full rounded-2xl bg-white p-5 text-slate-900 shadow-sm" style="border:1px solid rgba(56,84,166,.18)">
-                <p class="text-[10px] font-black uppercase tracking-widest" style="color:#2949A6">Reseau antennes</p>
-                <h3 class="mt-2 text-xl font-black uppercase tracking-tight text-slate-950">Supervision</h3>
-                <p class="mt-2 text-xs font-medium leading-relaxed text-slate-500">Vue rapide des terminaux antennes et de leur charge de passage aujourd'hui.</p>
-
-                <div class="mt-6 grid gap-3">
-                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                        <p class="font-mono text-3xl font-black text-slate-950">{{ str_pad($antennes->count(), 2, '0', STR_PAD_LEFT) }}</p>
-                        <p class="mt-1 text-[10px] font-bold uppercase tracking-wide text-slate-500">Antennes totales</p>
-                    </div>
-                    <div class="rounded-xl p-4" style="border:1px solid rgba(56,84,166,.18); background:rgba(56,84,166,.08)">
-                        <p class="font-mono text-3xl font-black" style="color:#3854A6">{{ str_pad($activeAntennes, 2, '0', STR_PAD_LEFT) }}</p>
-                        <p class="mt-1 text-[10px] font-bold uppercase tracking-wide" style="color:#3854A6">Actives aujourd'hui</p>
-                    </div>
-                    <div class="rounded-xl p-4" style="border:1px solid rgba(41,73,166,.18); background:rgba(41,73,166,.08)">
-                        <p class="font-mono text-3xl font-black" style="color:#2949A6">{{ str_pad($totalPassages, 2, '0', STR_PAD_LEFT) }}</p>
-                        <p class="mt-1 text-[10px] font-bold uppercase tracking-wide" style="color:#2949A6">Passages cumules</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <section class="lg:col-span-9">
-            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div class="grid grid-cols-12 border-b border-slate-100 bg-slate-50 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    <div class="col-span-5">Antenne</div>
-                    <div class="col-span-3">Activite</div>
-                    <div class="col-span-2 text-center">Passages</div>
-                    <div class="col-span-2 text-right">Action</div>
-                </div>
-
-                <div class="divide-y divide-slate-100">
-                    @foreach ($antennes as $antenne)
+<section class="overflow-hidden rounded-3xl bg-white shadow-sm">
+               <div class="grid gap-5 p-5 lg:grid-cols-[1.7fr_320px]">
+    <div class="relative mx-auto w-full max-w-[80%]" style="aspect-ratio: 1076 / 992; min-height: 650px;">
+             
+            <img src="{{  url('images/algeria-map-reference.png') }}" alt="Carte d'Algérie" class="absolute inset-0 z-0 block h-full w-full object-cover" style="transform: scale(1); transform-origin: center center;">
+                <div class="absolute inset-0 z-10">
+                    
+                    @foreach($mapAntennes as $marker)
                         @php
-                            $todayCount = 0;
-                            foreach ($antennes_visited as $visited) {
-                                if ($antenne->ant_id == $visited->ant_location) {
-                                    $todayCount = $visited->count;
-                                    break;
-                                }
-                            }
-                            $levelWidth = min(100, $todayCount * 18);
+                            $isSelected = (int) ($selectedAntenneId ?? 0) === (int) $marker['id'];
                         @endphp
-
                         <button
                             type="button"
-                            wire:click="select('{{ $antenne->ant_id }}')"
-                            class="grid w-full grid-cols-12 items-center gap-3 px-5 py-4 text-left transition hover:bg-indigo-50/40"
+                            wire:click="select('{{ $marker['id'] }}')"
+                            class="group absolute cursor-pointer outline-none transition"
+                            style="left: {{ $marker['x'] }}%; top: {{ $marker['y'] }}%; width: {{ $marker['w'] ?? 10 }}%; height: {{ $marker['h'] ?? 10 }}%; transform: translate(-50%, -50%);"
+                            title="{{ $marker['name'] }}"
+                            aria-label="{{ $marker['name'] }}"
                         >
-                            <div class="col-span-5 flex min-w-0 items-center gap-3">
-                                <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl {{ $todayCount > 0 ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500' }}">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24"><path fill="currentColor" d="M15 11V5.83c0-.53-.21-1.04-.59-1.41L12.7 2.71a.996.996 0 0 0-1.41 0l-1.7 1.7C9.21 4.79 9 5.3 9 5.83V7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2z"/></svg>
-                                    @if($todayCount > 0)
-                                        <span class="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span>
-                                    @endif
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="truncate text-sm font-black uppercase tracking-wide text-slate-900">{{ $antenne->antenne_name }}</p>
-                                    <p class="text-[11px] font-semibold text-slate-500">Terminal #{{ str_pad($antenne->ant_id, 3, '0', STR_PAD_LEFT) }}</p>
-                                </div>
-                            </div>
-
-                            <div class="col-span-3">
-                                <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-                                    <div class="h-full rounded-full {{ $todayCount > 0 ? 'bg-indigo-600' : 'bg-slate-300' }}" style="width: {{ $todayCount > 0 ? max(16, $levelWidth) : 8 }}%"></div>
-                                </div>
-                                    <p class="mt-1 text-[10px] font-bold uppercase tracking-wide {{ $todayCount > 0 ? '' : 'text-slate-400' }}" @if($todayCount > 0) style="color:#2949A6" @endif>
-                                    {{ $todayCount > 0 ? 'Flux detecte' : 'Aucun flux' }}
-                                </p>
-                            </div>
-
-                            <div class="col-span-2 text-center">
-                                <span class="inline-flex min-w-12 justify-center rounded-lg border {{ $todayCount > 0 ? '' : 'border-slate-200 bg-slate-50 text-slate-500' }} px-3 py-1 font-mono text-sm font-black" @if($todayCount > 0) style="border-color:rgba(56,84,166,.18); background:rgba(41,73,166,.08); color:#2949A6" @endif>
-                                    {{ str_pad($todayCount, 2, '0', STR_PAD_LEFT) }}
-                                </span>
-                            </div>
-
-                            <div class="col-span-2 flex justify-end">
-                                <span class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-[10px] font-black uppercase tracking-wide text-slate-500 transition group-hover:border-indigo-200 group-hover:text-indigo-600">
-                                    Voir
-                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24"><path fill="currentColor" d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6z"/></svg>
-                                </span>
-                            </div>
+                            <span class="absolute inset-0 rounded-[999px] border border-transparent bg-transparent transition group-hover:border-violet-400/70 group-hover:bg-violet-200/10 {{ $isSelected ? 'border-violet-500/70 bg-violet-200/15 ring-4 ring-violet-300/70' : '' }}"></span>
+                            <span class="sr-only">{{ $marker['name'] }}</span>
                         </button>
                     @endforeach
                 </div>
             </div>
-        </section>
-    </div>
+  
+        </div>
+    </section>
 
+    
     @if ($state)
         <div x-data="{ modelOpen: true }">
             <div x-show="modelOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">

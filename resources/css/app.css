@@ -12,27 +12,52 @@
         --anam-blue: #2949A6;
         --anam-blue-soft: #3854A6;
         --anam-light: #F2F2F2;
+        --visitx-primary: #7F56D9;
+        --visitx-secondary: #0E0E30;
+        --visitx-success: #32D583;
+        --visitx-warning: #FDB022;
+        --visitx-danger: #F04438;
+        --visitx-muted: #667085;
+        --visitx-surface: #F9FAFB;
+        --visitx-panel: #FFFFFF;
+        --visitx-border: #E4E7EC;
+        --visitx-sidebar: #0E0E30;
+        --visitx-sidebar-soft: #1A1A4E;
     }
 
     html {
         font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        height: 100%;
     }
 
     body {
         @apply text-slate-900 antialiased;
         background: var(--anam-light);
+        min-height: 100%;
     }
 }
 
 @layer components {
     .app-shell {
-        @apply flex h-screen;
-        background: var(--anam-light);
-        color: var(--anam-navy);
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
     }
 
+    .app-shell > .relative.flex.flex-1 {
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+    }
+   
     .app-main {
         @apply flex-1 overflow-x-hidden overflow-y-auto;
+        min-height: 0;
         background:
             radial-gradient(circle at 18% 0%, rgba(41, 73, 166, 0.08), transparent 24rem),
             radial-gradient(circle at 100% 22%, rgba(56, 84, 166, 0.06), transparent 22rem),
@@ -40,7 +65,7 @@
     }
 
     .app-container {
-        @apply mx-auto w-full max-w-7xl px-4 py-5 pb-16 sm:px-6 lg:px-8;
+        @apply mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8;
     }
 
     .page-title {
@@ -318,7 +343,7 @@
     }
 
     .console-footer {
-        @apply pointer-events-none absolute bottom-0 left-0 right-0 hidden h-10 items-center justify-between border-t border-slate-200 bg-white/95 px-6 text-[10px] text-slate-500 shadow-sm backdrop-blur lg:flex;
+        @apply pointer-events-none hidden h-10 items-center justify-between border-t border-slate-200 bg-white/95 px-6 text-[10px] text-slate-500 shadow-sm backdrop-blur lg:flex;
         font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
 
@@ -392,6 +417,258 @@
         @apply rounded-2xl p-5 text-slate-950;
         border: 1px solid rgba(56, 84, 166, 0.20);
         background: rgba(41, 73, 166, 0.08);
+    }
+
+    .visitx-shell {
+        background: var(--visitx-surface);
+        color: var(--visitx-secondary);
+    }
+
+    .visitx-shell .app-main {
+        background:
+            radial-gradient(circle at 18% 0%, rgba(127, 86, 217, 0.10), transparent 22rem),
+            radial-gradient(circle at 100% 18%, rgba(50, 213, 131, 0.08), transparent 18rem),
+            var(--visitx-surface);
+    }
+
+    .visitx-shell .app-sidebar {
+        background:
+            radial-gradient(circle at top, rgba(127, 86, 217, 0.20), transparent 14rem),
+            linear-gradient(180deg, var(--visitx-sidebar) 0%, #141447 55%, #10103a 100%);
+        border-right: none;
+        box-shadow: 18px 0 40px rgba(14, 14, 48, 0.18);
+    }
+
+    .visitx-shell .sidebar-brand {
+        @apply mx-4 mb-5 mt-5 rounded-2xl border-0 p-4;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .visitx-brand-mark {
+        @apply flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-black text-white;
+        background: linear-gradient(135deg, var(--visitx-primary), #9E77ED);
+        box-shadow: 0 12px 30px rgba(127, 86, 217, 0.28);
+    }
+
+    .visitx-shell .sidebar-nav {
+        @apply px-4;
+    }
+
+    .visitx-shell .sidebar-link {
+        @apply rounded-xl px-4 py-3 text-sm font-semibold;
+        color: #A0A8C0;
+    }
+
+    .visitx-shell .sidebar-link:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #FFFFFF;
+    }
+
+    .visitx-shell .sidebar-link-active {
+        background: rgba(127, 86, 217, 0.95);
+        color: #FFFFFF;
+        --tw-ring-color: transparent;
+        box-shadow: 0 14px 28px rgba(127, 86, 217, 0.28);
+    }
+
+    .visitx-shell .console-status {
+        @apply mx-4 mb-5 rounded-2xl border-0 p-4;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .visitx-shell .console-status-title,
+    .visitx-shell .console-status-text {
+        color: #D0D5DD;
+    }
+
+    .visitx-shell .console-status-title::before {
+        background: var(--visitx-success);
+        box-shadow: 0 0 0 4px rgba(50, 213, 131, 0.18);
+    }
+
+    .visitx-help-card {
+        @apply mx-4 mt-auto rounded-2xl p-4 text-center;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .visitx-help-icon {
+        @apply mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full text-white;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .visitx-help-title {
+        @apply text-sm font-bold text-white;
+    }
+
+    .visitx-help-text {
+        @apply mt-2 text-xs leading-5;
+        color: #A0A8C0;
+    }
+
+    .visitx-help-action {
+        @apply mt-4 inline-flex w-full items-center justify-center rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wide text-white transition;
+        background: var(--visitx-primary);
+    }
+
+    .visitx-help-action:hover {
+        background: #6941C6;
+    }
+
+    .visitx-shell .topbar {
+        @apply min-h-[78px] border-b-0 px-6 py-4 shadow-none sm:px-8;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(14px);
+    }
+
+    .visitx-greeting {
+        @apply min-w-0;
+    }
+
+    .visitx-eyebrow {
+        @apply text-xs font-bold uppercase tracking-[0.24em];
+        color: var(--visitx-primary);
+    }
+
+    .visitx-topbar-title {
+        @apply text-lg font-bold;
+        color: var(--visitx-secondary);
+    }
+
+    .visitx-topbar-subtitle {
+        @apply text-xs;
+        color: var(--visitx-muted);
+    }
+
+    .visitx-search {
+        @apply items-center gap-2 rounded-xl border px-4 py-3 text-sm shadow-sm;
+        width: min(100%, 340px);
+        border-color: var(--visitx-border);
+        background: var(--visitx-panel);
+        color: var(--visitx-muted);
+    }
+
+    .visitx-search input {
+        @apply w-full border-0 bg-transparent p-0 text-sm outline-none;
+        color: var(--visitx-muted);
+    }
+
+    .visitx-avatar-button {
+        @apply flex h-11 w-11 items-center justify-center rounded-full border text-sm font-bold shadow-sm;
+        border-color: rgba(127, 86, 217, 0.15);
+        background: rgba(127, 86, 217, 0.12);
+        color: var(--visitx-primary);
+    }
+
+    .visitx-hero {
+        @apply flex flex-col gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between;
+        background:
+            linear-gradient(135deg, rgba(127, 86, 217, 0.10), rgba(255, 255, 255, 0.96) 38%),
+            var(--visitx-panel);
+        border: 1px solid var(--visitx-border);
+        box-shadow: 0 24px 50px rgba(16, 24, 40, 0.06);
+    }
+
+    .visitx-hero-side {
+        @apply flex flex-col items-start gap-3 sm:items-end;
+    }
+
+    .visitx-hero-chip {
+        @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold;
+        background: rgba(50, 213, 131, 0.12);
+        color: #027A48;
+    }
+
+    .visitx-hero-dot {
+        @apply inline-block h-2.5 w-2.5 rounded-full;
+        background: var(--visitx-success);
+    }
+
+    .visitx-stat-card {
+        @apply flex-col items-start gap-4 rounded-3xl border-0;
+        background: var(--visitx-panel);
+        box-shadow: 0 20px 40px rgba(16, 24, 40, 0.06);
+    }
+
+    .visitx-stat-badge {
+        @apply rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide;
+        background: rgba(127, 86, 217, 0.12);
+        color: var(--visitx-primary);
+    }
+
+    .visitx-stat-badge-amber {
+        background: rgba(253, 176, 34, 0.16);
+        color: #B54708;
+    }
+
+    .visitx-stat-badge-green {
+        background: rgba(50, 213, 131, 0.14);
+        color: #027A48;
+    }
+
+    .visitx-stat-badge-slate {
+        background: rgba(102, 112, 133, 0.14);
+        color: #475467;
+    }
+
+    .visitx-shell .panel,
+    .visitx-shell .form-card {
+        border: 1px solid var(--visitx-border);
+        border-radius: 1.5rem;
+        background: var(--visitx-panel);
+        box-shadow: 0 20px 40px rgba(16, 24, 40, 0.05);
+    }
+
+    .visitx-shell .modern-table thead th,
+    .visitx-shell table thead th {
+        background: #FCFCFD;
+        color: var(--visitx-muted);
+    }
+
+    .visitx-shell .modern-table tbody tr:hover,
+    .visitx-shell table tbody tr:hover {
+        background: rgba(127, 86, 217, 0.04);
+    }
+
+    .visitx-form-hero {
+        @apply flex flex-col gap-3 border-b pb-5 sm:flex-row sm:items-center sm:justify-between;
+        border-color: var(--visitx-border);
+    }
+
+    .visitx-form input[type="text"],
+    .visitx-form input[type="datetime-local"],
+    .visitx-form select,
+    .visitx-form textarea {
+        border-color: var(--visitx-border);
+        border-radius: 0.9rem;
+        min-height: 46px;
+        padding: 0.75rem 1rem;
+    }
+
+    .visitx-form textarea {
+        min-height: 110px;
+    }
+
+    .visitx-form input[name="badge_n"] {
+        background: rgba(253, 176, 34, 0.14);
+        border-color: rgba(253, 176, 34, 0.4);
+    }
+
+    .visitx-form .primary-action,
+    .visitx-form input[type="submit"],
+    .visitx-form #elyctis-read-btn {
+        border-radius: 0.9rem;
+        background: var(--visitx-primary);
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 0.875rem;
+        font-weight: 700;
+    }
+
+    .visitx-form .primary-action:hover,
+    .visitx-form input[type="submit"]:hover,
+    .visitx-form #elyctis-read-btn:hover {
+        background: #6941C6;
     }
 
     .visit-form-modern .page-title,
@@ -504,6 +781,90 @@
         @apply float-none h-11 w-32 cursor-pointer;
     }
 
+    .visitx-form .bg-gray-300,
+    .visit-form-modern .bg-gray-300,
+    .antenne-form .bg-gray-300 {
+        @apply border border-slate-200 bg-slate-50 text-slate-700;
+        border-radius: 0.9rem;
+    }
+
+    .visitx-form .bg-gray-100,
+    .visit-form-modern .bg-gray-100,
+    .antenne-form .bg-gray-100 {
+        @apply border-slate-200 bg-white text-slate-800 shadow-sm;
+        border-radius: 0.9rem;
+    }
+
+    .visitx-form .rounded-r,
+    .visit-form-modern .rounded-r,
+    .antenne-form .rounded-r {
+        border-radius: 0.9rem;
+    }
+
+    .visitx-form .rounded-l,
+    .visit-form-modern .rounded-l,
+    .antenne-form .rounded-l {
+        border-radius: 0.9rem;
+    }
+
+    .visitx-form .bg-green-500,
+    .visitx-form .bg-red-500,
+    .visit-form-modern .bg-green-500,
+    .visit-form-modern .bg-red-500,
+    .antenne-form .bg-green-500,
+    .antenne-form .bg-red-500 {
+        background: var(--visitx-primary);
+    }
+
+    .visitx-form .bg-green-500:hover,
+    .visitx-form .bg-red-500:hover,
+    .visit-form-modern .bg-green-500:hover,
+    .visit-form-modern .bg-red-500:hover,
+    .antenne-form .bg-green-500:hover,
+    .antenne-form .bg-red-500:hover {
+        background: #6941C6;
+    }
+
+    .visitx-form .bg-gray-300,
+    .visit-form-modern .bg-gray-300,
+    .antenne-form .bg-gray-300,
+    .visitx-form .bg-gray-100,
+    .visit-form-modern .bg-gray-100,
+    .antenne-form .bg-gray-100 {
+        border-width: 1px;
+    }
+
+    .visitx-form .modal.fade,
+    .visit-form-modern .modal.fade,
+    .antenne-form .modal.fade {
+        @apply rounded-2xl border border-slate-200 bg-white shadow-xl;
+    }
+
+    .visitx-form .modal.fade span,
+    .visit-form-modern .modal.fade span,
+    .antenne-form .modal.fade span {
+        @apply text-slate-700;
+    }
+
+    .visitx-form .modal.fade .bg-gray-300,
+    .visit-form-modern .modal.fade .bg-gray-300,
+    .antenne-form .modal.fade .bg-gray-300 {
+        @apply bg-white;
+    }
+
+    .visitx-form .modal.fade .hover\:bg-gray-500:hover,
+    .visit-form-modern .modal.fade .hover\:bg-gray-500:hover,
+    .antenne-form .modal.fade .hover\:bg-gray-500:hover {
+        background: rgba(127, 86, 217, 0.08);
+        color: var(--visitx-primary);
+    }
+
+    .visitx-form .hidden,
+    .visit-form-modern .hidden,
+    .antenne-form .hidden {
+        display: none !important;
+    }
+
     .visit-form-modern .form-card > div:last-child {
         display: flex;
         justify-content: flex-end;
@@ -561,10 +922,10 @@
     }
 
     .antenne-shell .app-sidebar {
-        background:
-            radial-gradient(circle at 35% 0%, rgba(41, 73, 166, 0.10), transparent 13rem),
-            linear-gradient(180deg, #ffffff 0%, var(--anam-light) 58%, rgba(56, 84, 166, 0.10) 100%);
-    }
+    background:
+        radial-gradient(circle at top, rgba(127,86,217,.20), transparent 14rem),
+        linear-gradient(180deg,#0E0E30 0%,#141447 55%,#10103A 100%);
+}
 
     .antenne-shell .sidebar-link-active {
         @apply ring-1;

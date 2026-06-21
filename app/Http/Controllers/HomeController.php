@@ -39,11 +39,14 @@ class HomeController extends Controller
                 return $this->index_2();
                 break;
                   case 1:
-                return $this->index_1();
+                return $this->index_5();
+                break;
+                  case 9:
+                return $this->index_9();
                 break;
 
             default:
-            return redirect()->back();
+            abort(403, 'Profil utilisateur non autorisé ou non configuré.');
                 break;
         }
  
@@ -152,8 +155,7 @@ class HomeController extends Controller
             ->with('data', $visits)
             ->with('isAntenneHead', $isHead);
     }
-
-
+                   
     public function index_5() 
     {
         $today=visit::wheredate('entry_date',db::raw('CURDATE()'))
@@ -286,6 +288,69 @@ class HomeController extends Controller
             ->with('data',$visits);
     }
 
+    public function index_9()
+    {
+        $ddmServiceId = $this->ddmServiceGroupId();
+        $serviceIds = ug::where('a_user', '=', Auth::guard('web')->user()->id)->pluck('a_group');
+
+        $today = visit::wheredate('entry_date', db::raw('CURDATE()'))
+            ->where('is_deleted', '=', 0)
+            ->where('service_emp_visited', '=', $ddmServiceId)
+            ->count();
+        $waiting = visit::wheredate('entry_date', db::raw('CURDATE()'))
+            ->where('status', '=', 0)
+            ->where('is_deleted', '=', 0)
+            ->where('service_emp_visited', '=', $ddmServiceId)
+            ->whereNull('emp_visited')
+            ->count();
+        $progress = visit::wheredate('entry_date', db::raw('CURDATE()'))
+            ->where('status', '=', 1)
+            ->where('is_deleted', '=', 0)
+            ->where('service_emp_visited', '=', $ddmServiceId)
+            ->count();
+        $finished = visit::wheredate('entry_date', db::raw('CURDATE()'))
+            ->where('status', '=', 2)
+            ->where('is_deleted', '=', 0)
+            ->where('service_emp_visited', '=', $ddmServiceId)
+            ->count();
+
+        $visits = db::table('visits')->selectRaw('visits.id,badge_n,visits.is_deleted,organisations.name as org_name,visitors.firstname,status,visitors.lastname,entry_date,users.name as emp_visited,groups.group_name as service_name,visits.subject as subject')
+            ->leftjoin('visitors', 'visitors.id', '=', 'visits.visitor')
+            ->leftjoin('organisations', 'organisations.id', '=', 'visits.organization')
+            ->leftjoin('groups', 'groups.id', '=', 'visits.service_emp_visited')
+            ->leftjoin('users', 'users.id', '=', 'visits.emp_visited')
+            ->wheredate('entry_date', db::raw('CURDATE()'))
+            ->where('visits.is_deleted', '=', 0)
+            ->where('visits.service_emp_visited', '=', $ddmServiceId)
+            ->whereIn('status', [0, 1])
+            ->where(function ($query) use ($serviceIds, $ddmServiceId) {
+                $query->where('emp_visited', '=', Auth::guard('web')->user()->id)
+                    ->orWhere(function ($query) use ($ddmServiceId) {
+                        $query->where('service_emp_visited', '=', $ddmServiceId)
+                            ->whereNull('emp_visited');
+                    });
+            })
+            ->orderBy('entry_date')
+            ->get();
+
+        $serviceUsers = ug::select('users.id', 'users.name')
+            ->leftjoin('users', 'users.id', '=', 'user_groups.a_user')
+            ->where('user_groups.a_group', '=', $ddmServiceId)
+            ->orderBy('users.name')
+            ->get();
+
+        return view('Service.home')
+            ->with('url', 'home')
+            ->with('today', $today)
+            ->with('progress', $progress)
+            ->with('waiting', $waiting)
+            ->with('finished', $finished)
+            ->with('data', $visits)
+            ->with('serviceUsers', $serviceUsers)
+            ->with('serviceName', 'DDM')
+            ->with('serviceId', $ddmServiceId);
+    }
+
     public function index_3() 
     {
         $serviceIds=ug::where('a_user','=',Auth::guard('web')->user()->id)->pluck('a_group');
@@ -328,35 +393,61 @@ class HomeController extends Controller
 
     public function index_2() 
     {
-        $today=visit::wheredate('entry_date',db::raw('CURDATE()'))
-            ->where('is_deleted','=',0)->count();
-        $waiting=visit::wheredate('entry_date',db::raw('CURDATE()'))
-            ->where('status','=',0)
-            ->where('is_deleted','=',0)->count();
-        $progress=visit::wheredate('entry_date',db::raw('CURDATE()'))
-            ->where('status','=',1)
-            ->where('is_deleted','=',0)->count();
-        $finished=visit::wheredate('entry_date',db::raw('CURDATE()'))
-            ->where('status','=',2)
-            ->where('is_deleted','=',0)->count();
-        $ant_visited=ant_visits::wheredate('entry_date',db::raw('CURDATE()'))->get()->unique('ant_location')->count();
-        $ant_visited_count=ant_visits::wheredate('entry_date',db::raw('CURDATE()'))->count();
+        $period = request('period', 'today');
+        $allowedPeriods = ['today', '1_month', '1_year', '2_years'];
+        if (!in_array($period, $allowedPeriods, true)) {
+            $period = 'today';
+        }
+
+        $periodStart = match ($period) {
+            '1_month' => now()->subMonth()->startOfDay(),
+            '1_year' => now()->subYear()->startOfDay(),
+            '2_years' => now()->subYears(2)->startOfDay(),
+            default => now()->startOfDay(),
+        };
+
+        $periodEnd = now()->endOfDay();
+
+        $visitBase = visit::whereBetween('entry_date', [$periodStart, $periodEnd])
+            ->where('is_deleted', '=', 0);
+
+        $today = (clone $visitBase)->count();
+        $waiting = (clone $visitBase)->where('status', '=', 0)->count();
+        $progress = (clone $visitBase)->where('status', '=', 1)->count();
+        $finished = (clone $visitBase)->where('status', '=', 2)->count();
+        $ant_visited = ant_visits::whereBetween('entry_date', [$periodStart, $periodEnd])
+            ->get()
+            ->unique('ant_location')
+            ->count();
+        $ant_visited_count = ant_visits::whereBetween('entry_date', [$periodStart, $periodEnd])->count();
 
         $visits=db::table('visits')->selectRaw('visits.id,visits.is_deleted,organisations.name as org_name,visitors.firstname,status,visitors.lastname,entry_date,users.name as emp_visited,groups.group_name as service_name,visits.subject as subject')
         ->leftjoin('visitors','visitors.id','=','visits.visitor')
         ->leftjoin('organisations','organisations.id','=','visits.organization')
         ->leftjoin('groups','groups.id','=','visits.service_emp_visited')
         ->leftjoin('users','users.id','=','visits.emp_visited')
-        ->wheredate('entry_date',db::raw('CURDATE()'))
-        ->where('status','=',0)
+        ->whereBetween('entry_date', [$periodStart, $periodEnd])
+        ->whereIn('status',[0,1,2,3])
         ->where('visits.is_deleted','=',0)
-        ->orderByDesc('entry_date')->get();
+        ->orderByDesc('entry_date')
+        ->limit($period === 'today' ? 5 : 12)
+        ->get();
+
+        $periodLabel = match ($period) {
+            '1_month' => '1 mois',
+            '1_year' => '1 an',
+            '2_years' => '2 ans',
+            default => "Aujourd'hui",
+        };
+
         return view('President.home')
             ->with('url','home')
             ->with('today',$today)
             ->with('progress',$progress)
             ->with('waiting',$waiting)
             ->with('finished',$finished)
+            ->with('selectedPeriod', $period)
+            ->with('periodLabel', $periodLabel)
             ->with('today_ant_visited',$ant_visited)
             ->with('today_ant',$ant_visited_count)
             ->with('data',$visits);
@@ -385,6 +476,11 @@ class HomeController extends Controller
     }
 
     private function serviceAssignmentGroupId(): int
+    {
+        return 19;
+    }
+
+    private function ddmServiceGroupId(): int
     {
         return 19;
     }

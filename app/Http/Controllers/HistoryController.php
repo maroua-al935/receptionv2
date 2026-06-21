@@ -28,13 +28,12 @@ class HistoryController extends Controller
             case 2:
             return $this->index_2();
             break;
-            case 4:
-            if ($this->isServiceAssignmentAgent()) {
-                return $this->index_5();
-            }
-            return redirect()->route('home');
+           case 4:
+            return $this->index_4();
             break;
-           
+           case 9:
+            return $this->index_4();
+            break;
         }
     }
      public function index_6()
@@ -47,6 +46,10 @@ class HistoryController extends Controller
     public function index_5()
     {
         return view('Reception.history')->with('url','history');
+    }
+    public function index_4()
+    {
+        return view('Service.history')->with('url','history');
     }
     public function index_2()
     {

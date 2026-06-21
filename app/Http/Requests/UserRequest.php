@@ -25,18 +25,24 @@ class UserRequest extends FormRequest
     public function rules()
     {
         $userId = $this->route('user')->id ?? null;
+        $passwordRule = $userId ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed';
 
         return [
-            'name' => 'required|string|max:255',
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'username')->ignore($userId),
+            ],
             'email' => [
                 'required',
                 'email',
                 Rule::unique('users')->ignore($userId),
             ],
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => $passwordRule,
             'profile' => 'required|exists:profiles,id',
-            'firstname' => 'nullable|string|max:255',
-            'lastname' => 'nullable|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
             'services' => 'nullable|array',
             'services.*' => 'exists:groups,id',

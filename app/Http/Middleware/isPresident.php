@@ -16,12 +16,15 @@ class isPresident
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    {
-        if (auth::guard('web')->user()->profile == "2")
-        {
-            return $next($request);
-        }else{
-            return redirect()->route('home');
-        }
+{
+    if (!Auth::check()) {
+        return redirect()->route('l_index');
     }
+
+    if ((int) Auth::user()->profile === 2) {
+        return $next($request);
+    }
+
+    return redirect()->route('l_index');
+}
 }

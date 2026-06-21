@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\visitors;
 use App\Models\visits_permets;
 use App\Models\visits;
+use App\Models\user_groups as ug;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -39,13 +40,15 @@ public $activeVisitors = 0;
 }
 private function loadStats()
 {
-    $this->totalVisits = visits::count();
+    $baseQuery = $this->applyVisibility(visits::query());
 
-    $this->todayVisits = visits::whereDate('entry_date', now())->count();
+    $this->totalVisits = (clone $baseQuery)->count();
 
-    $this->companiesCount = visits::distinct('organization')->count('organization');
+    $this->todayVisits = (clone $baseQuery)->whereDate('entry_date', now())->count();
 
-    $this->activeVisitors = visits::where('status', 'active')->count();
+    $this->companiesCount = (clone $baseQuery)->distinct('organization')->count('organization');
+
+    $this->activeVisitors = (clone $baseQuery)->where('status', 'active')->count();
 }
     public function resetdata()
     {
@@ -226,6 +229,22 @@ private function loadStats()
 
     private function applyVisibility($query)
     {
+        $user = Auth::guard('web')->user();
+
+        if ($user && (int) $user->profile === 4) {
+            $headServiceIds = ug::where('a_user', '=', $user->id)
+                ->where('is_head', '=', 1)
+                ->pluck('a_group');
+
+            $query->where(function ($query) use ($user, $headServiceIds) {
+                $query->where('visits.emp_visited', '=', $user->id)
+                    ->orWhere(function ($query) use ($headServiceIds) {
+                        $query->whereIn('visits.service_emp_visited', $headServiceIds)
+                            ->whereNull('visits.emp_visited');
+                    });
+            });
+        }
+
         if ($this->isServiceAssignmentAgent()) {
             $query->where('visits.service_emp_visited', '=', $this->serviceAssignmentGroupId());
         }

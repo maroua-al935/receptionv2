@@ -7,105 +7,100 @@
     <title>{{ config('app.name') }} | Login</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900">
-    <div class="relative flex min-h-screen flex-col overflow-hidden px-4 py-6 sm:px-8">
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.08)_0%,transparent_65%)]"></div>
-        <div class="pointer-events-none absolute right-1/4 top-0 h-80 w-80 rounded-full bg-emerald-500/5 blur-[100px]"></div>
+<body x-data="{ showPassword: false }" class="min-h-screen bg-[#f8f7fc] text-slate-900">
+    <div class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8">
+        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(127,86,217,0.16),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(50,213,131,0.10),transparent_24%)]"></div>
 
-        <header class="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black text-white shadow-lg" style="background:#2949A6; box-shadow:0 10px 24px rgba(41,73,166,.18)">RC</div>
+        <div class="relative grid w-full max-w-6xl overflow-hidden rounded-[32px] border border-white/70 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.10)] lg:grid-cols-[0.85fr_1.15fr]">
+            <section class="hidden flex-col justify-between bg-[#181846] p-8 text-white lg:flex">
                 <div>
-                    <h1 class="text-xs font-black uppercase tracking-widest text-slate-950">Reception Console</h1>
-                    <p class="font-mono text-[9px] font-extrabold uppercase tracking-wider" style="color:#2949A6">Secure surete & acces</p>
-                </div>
-            </div>
-            <span class="hidden rounded border border-slate-200 bg-white px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-wider text-slate-500 shadow-sm sm:inline">Portail multi-roles ANAM</span>
-        </header>
-
-        <main class="relative z-10 mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center gap-8 py-8 lg:grid-cols-12">
-            <section class="space-y-6 lg:col-span-7">
-                <div class="space-y-2">
-                    <span class="text-[10px] font-black uppercase tracking-widest" style="color:#2949A6">Acces habilite</span>
-                    <h2 class="max-w-2xl text-2xl font-black uppercase tracking-tight text-slate-950 sm:text-3xl">Console d'audit et de reception du site</h2>
-                    <p class="max-w-xl text-xs font-medium leading-relaxed text-slate-500">Controle des identites, suivi des visiteurs, pilotage des flux et tracabilite operationnelle depuis un espace unique.</p>
-                </div>
-
-                <div class="grid gap-3 sm:grid-cols-2">
-                    <div class="rounded-2xl bg-white p-4 shadow-sm" style="border:1px solid rgba(56,84,166,.18)">
-                        <div class="flex items-center gap-3">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl" style="background:rgba(41,73,166,.08); color:#2949A6">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5zm0 2.19l7 3.11V11c0 4.52-2.98 8.69-7 9.93C7.98 19.69 5 15.52 5 11V6.3z"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xs font-black uppercase tracking-wide text-slate-950">Reception principale</h3>
-                                <p class="text-[10px] font-medium text-slate-500">Controle d'identite et attribution de badge.</p>
-                            </div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7F56D9] text-xl font-black shadow-[0_18px_40px_rgba(127,86,217,0.35)]">V</div>
+                        <div>
+                            <p class="text-3xl font-black tracking-tight">VisitX</p>
+                            <p class="text-xs uppercase tracking-[0.35em] text-violet-200">Reception platform</p>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
-                        <div class="flex items-center gap-3">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16v2H4zm2 4h12v2H6zm-2 4h16v8H4zm2 2v4h12v-4z"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xs font-black uppercase tracking-wide text-slate-950">Registre securise</h3>
-                                <p class="text-[10px] font-medium text-slate-500">Historique et statuts en temps reel.</p>
-                            </div>
-                        </div>
+
+                    <div class="mt-12 max-w-xs">
+                        <p class="text-xs font-bold uppercase tracking-[0.3em] text-violet-200">Connexion securisee</p>
+                        <h1 class="mt-4 text-3xl font-bold leading-tight">Accedez a la console visiteurs.</h1>
+                        <p class="mt-4 text-sm leading-7 text-slate-300">Authentification simple pour l'accueil, le suivi des visites et la supervision des flux.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p class="text-sm font-semibold">Gestion visiteurs</p>
+                        <p class="mt-1 text-xs text-slate-300">Enregistrement, historique, suivi des badges.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p class="text-sm font-semibold">Acces multi-profils</p>
+                        <p class="mt-1 text-xs text-slate-300">Reception, president, services, antennes.</p>
                     </div>
                 </div>
             </section>
-
-            <section class="lg:col-span-5">
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70">
-                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                        <div class="flex items-center gap-x-3">
-                            <img class="h-14 w-14 object-contain" src="{{url('images/logo_anam.png')}}" alt="logo reception">
-                            <div class="h-12 w-px bg-slate-200"></div>
-                            <img class="h-14 w-14 object-contain" src="{{url('images/logo.png')}}" alt="logo anam">
-                        </div>
-                        <div>
-                            <p class="text-sm font-black uppercase tracking-widest text-slate-950">VisiLog</p>
-                            <p class="font-mono text-[10px] font-bold" style="color:#2949A6">Session securisee</p>
-                        </div>
+ 
+            <section class="bg-white p-8 sm:p-12">
+                <div class="mx-auto max-w-lg">
+                    <div class="mb-8 text-center lg:text-left">
+                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-100 text-xl font-black text-violet-700 lg:mx-0">V</div>
+                        <h2 class="mt-5 text-3xl font-bold tracking-tight text-slate-950">Connexion</h2>
+                        <p class="mt-2 text-sm text-slate-500">Saisissez vos identifiants pour ouvrir la session.</p>
                     </div>
 
-                    <form action="{{ route('p_login') }}" method="post" class="space-y-4">
+                    <form action="{{ route('p_login') }}" method="post" class="space-y-5">
                         @csrf
+
                         <div>
-                            <label for="name" class="mb-1 block text-[9px] font-extrabold uppercase tracking-widest text-slate-500">Nom d'utilisateur</label>
-                            <input type="text" name="name" id="name" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-900 outline-none transition" value="">
+                            <label for="name" class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Nom d'utilisateur</label>
+                            <input type="text" name="name" id="name" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100" value="{{ old('name') }}">
                             @error('email')
-                                <div class="mt-1 text-sm text-red-500">{{$message}}</div>
+                                <div class="mt-1 text-sm text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div>
-                            <label for="password" class="mb-1 block text-[9px] font-extrabold uppercase tracking-widest text-slate-500">Mot de passe</label>
-                            <input type="password" name="password" id="password" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-900 outline-none transition" value="">
-                            <div class="mt-3 flex items-center gap-2 text-sm text-slate-500">
-                                <input type="checkbox" name="remember" id="remember" class="rounded border-slate-300 bg-white" style="color:#2949A6">
-                                <label for="remember">Se Souvenir de moi</label>
+                            <label for="password" class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Mot de passe</label>
+                            <div class="relative">
+                                <input x-bind:type="showPassword ? 'text' : 'password'" name="password" id="password" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100">
+                                <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-violet-600" aria-label="Afficher ou masquer le mot de passe">
+                                    <svg x-show="!showPassword" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7c-4.477 0-8.268-2.943-9.542-7Z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <svg x-show="showPassword" x-cloak class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m3 3l18 18"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.584 10.587A2 2 0 0 0 12 14a2 2 0 0 0 1.414-.586"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.363 5.365A9.466 9.466 0 0 1 12 5c4.478 0 8.268 2.943 9.542 7a9.523 9.523 0 0 1-4.249 5.257"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.228 6.228A9.45 9.45 0 0 0 2.458 12c1.274 4.057 5.065 7 9.542 7a9.47 9.47 0 0 0 5.772-1.772"/>
+                                    </svg>
+                                </button>
                             </div>
                             @error('password')
-                                <span class="mt-1 block text-sm text-red-500">{{$message}}</span>
+                                <span class="mt-1 block text-sm text-red-500">{{ $message }}</span>
                             @enderror
                             @error('failed')
-                                <span class="mt-1 block text-sm font-bold text-red-500">{{$message}}</span>
+                                <span class="mt-1 block text-sm font-semibold text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <input type="submit" class="mt-2 w-full rounded-xl px-4 py-3 text-xs font-black uppercase tracking-wide text-white shadow-lg transition" style="background:#2949A6; box-shadow:0 10px 24px rgba(41,73,166,.12)" value="Demarrer la session habilitee">
+                        <label for="remember" class="flex items-center gap-3 text-sm text-slate-500">
+                            <input type="checkbox" name="remember" id="remember" class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-200">
+                            <span>Se souvenir de moi</span>
+                        </label>
+
+                        <button type="submit" class="w-full rounded-2xl bg-[#7F56D9] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_40px_rgba(127,86,217,0.28)] transition hover:bg-[#6941C6]">
+                            Se connecter
+                        </button>
                     </form>
+
+                    <div class="mt-8 border-t border-slate-100 pt-5 text-center text-xs text-slate-400 lg:text-left">
+                        VisiLog {{ config('app.version') }} // ANAM {{ date('Y') }}
+                    </div>
                 </div>
             </section>
-        </main>
-
-        <footer class="relative z-10 mx-auto max-w-xl space-y-1 text-center font-mono text-[10px] text-slate-500">
-            <p>Systeme certifie Vigipirate - Niveau Alerte "Attentat".</p>
-            <span class="block text-slate-500">VisiLog {{config('app.version')}} // ANAM {{ date('Y') }}</span>
-        </footer>
+        </div>
     </div>
 </body>
 </html>

@@ -16,12 +16,15 @@ class receptionpresident
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    {
-        if (in_array((int) auth::guard('web')->user()->profile, [2, 4, 5, 8], true))
-        {
-            return $next($request);
-        }else{
-            return redirect()->route('home');
-        }
+{
+    if (!Auth::check()) {
+        return redirect()->route('l_index');
     }
+
+    if (in_array((int) Auth::user()->profile, [2,4,5,8], true)) {
+        return $next($request);
+    }
+
+    return redirect()->route('l_index');
+}
 }

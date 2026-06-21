@@ -542,17 +542,7 @@ video {
   pointer-events: none;
 }
 
-.fixed {
-  position: fixed;
-}
 
-.absolute {
-  position: absolute;
-}
-
-.relative {
-  position: relative;
-}
 
 .inset-0 {
   top: 0px;
@@ -1104,22 +1094,6 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
-}
-
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
-.overflow-y-auto {
-  overflow-y: auto;
-}
-
-.overflow-x-hidden {
-  overflow-x: hidden;
-}
-
-.whitespace-nowrap {
-  white-space: nowrap;
 }
 
 .break-words {

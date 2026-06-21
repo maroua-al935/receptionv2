@@ -1,14 +1,15 @@
 @extends('Reception.layouts.master')
 
 @section('body')
-<form action="{{ route('p_add_visitors') }}" method="post" enctype="multipart/form-data">
+<form action="{{ route('p_add_visitors') }}" method="post" enctype="multipart/form-data" class="visitx-form">
     @csrf
     <input type="hidden" name="new_visitor" value="1">
 
     <div class="w-full max-w-5xl py-2">
         <div class="form-card">
-            <div class="flex flex-col gap-3 border-b border-slate-100 pb-5 sm:flex-row sm:items-center sm:justify-between">
+            <div class="visitx-form-hero">
                 <div>
+                    <span class="visitx-eyebrow block">Nouveau passage</span>
                     <span class="page-title block">Enregistrer une visite</span>
                     <p class="page-subtitle">Identifier le visiteur et remettre le badge.</p>
                 </div>
